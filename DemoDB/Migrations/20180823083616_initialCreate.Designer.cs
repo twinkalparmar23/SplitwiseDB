@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoDB.Migrations
 {
     [DbContext(typeof(DemoDbContext))]
-    [Migration("20180814042042_eigthCreate")]
-    partial class eigthCreate
+    [Migration("20180823083616_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,7 @@ namespace DemoDB.Migrations
 
                     b.Property<int>("CreatorId");
 
-                    b.Property<int>("GroupId");
+                    b.Property<int?>("GroupId");
 
                     b.Property<byte[]>("Image");
 
@@ -79,6 +79,10 @@ namespace DemoDB.Migrations
 
                     b.HasKey("FriendListId");
 
+                    b.HasIndex("FriendId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("FriendList");
                 });
 
@@ -120,9 +124,9 @@ namespace DemoDB.Migrations
                     b.ToTable("GroupMember");
                 });
 
-            modelBuilder.Entity("DemoDB.Model.GroupPayer", b =>
+            modelBuilder.Entity("DemoDB.Model.Payer", b =>
                 {
-                    b.Property<int>("GroupPayerId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -132,34 +136,13 @@ namespace DemoDB.Migrations
 
                     b.Property<int>("PayerId");
 
-                    b.HasKey("GroupPayerId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BillId");
 
                     b.HasIndex("PayerId");
 
-                    b.ToTable("GroupPayer");
-                });
-
-            modelBuilder.Entity("DemoDB.Model.IndividualPayer", b =>
-                {
-                    b.Property<int>("IndividualPayerid")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("BillId");
-
-                    b.Property<decimal>("PaidAmount");
-
-                    b.Property<int>("PayerId");
-
-                    b.HasKey("IndividualPayerid");
-
-                    b.HasIndex("BillId");
-
-                    b.HasIndex("PayerId");
-
-                    b.ToTable("IndividualPayer");
+                    b.ToTable("Payer");
                 });
 
             modelBuilder.Entity("DemoDB.Model.Settlement", b =>
@@ -168,17 +151,50 @@ namespace DemoDB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("PayerId");
+                    b.Property<int?>("GroupId");
 
-                    b.Property<int>("SharedMemberId");
+                    b.Property<int>("PayerId")
+                        .HasColumnName("Payer_Person");
+
+                    b.Property<int>("SharedMemberId")
+                        .HasColumnName("Requestor_Person");
+
+                    b.Property<decimal>("TotalAmount");
 
                     b.HasKey("SettlementId");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("PayerId");
 
                     b.HasIndex("SharedMemberId");
 
                     b.ToTable("Settlement");
+                });
+
+            modelBuilder.Entity("DemoDB.Model.Transactions", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("GroupId");
+
+                    b.Property<decimal>("PaidAmount");
+
+                    b.Property<int>("TransPayersId");
+
+                    b.Property<int>("TransReceiversId");
+
+                    b.HasKey("TransactionId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("TransPayersId");
+
+                    b.HasIndex("TransReceiversId");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("DemoDB.Model.User", b =>
@@ -207,20 +223,32 @@ namespace DemoDB.Migrations
 
                     b.HasOne("DemoDB.Model.Group", "Group")
                         .WithMany("Bills")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("GroupId");
                 });
 
             modelBuilder.Entity("DemoDB.Model.BillMember", b =>
                 {
                     b.HasOne("DemoDB.Model.Bill", "Bill")
-                        .WithMany()
+                        .WithMany("BillMembers")
                         .HasForeignKey("Billid")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("DemoDB.Model.User", "User")
                         .WithMany("BillMembers")
                         .HasForeignKey("SharedMemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DemoDB.Model.FriendList", b =>
+                {
+                    b.HasOne("DemoDB.Model.User", "friend")
+                        .WithMany("Friends")
+                        .HasForeignKey("FriendId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DemoDB.Model.User", "user")
+                        .WithMany("Users")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -245,34 +273,25 @@ namespace DemoDB.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("DemoDB.Model.GroupPayer", b =>
+            modelBuilder.Entity("DemoDB.Model.Payer", b =>
                 {
                     b.HasOne("DemoDB.Model.Bill", "Bill")
-                        .WithMany("GroupPayers")
+                        .WithMany("Payers")
                         .HasForeignKey("BillId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("DemoDB.Model.User", "User")
-                        .WithMany("GroupPayers")
-                        .HasForeignKey("PayerId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("DemoDB.Model.IndividualPayer", b =>
-                {
-                    b.HasOne("DemoDB.Model.Bill", "Bill")
-                        .WithMany("IndividualPayers")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("DemoDB.Model.User", "User")
-                        .WithMany("IndividualPayers")
+                        .WithMany("Payersdata")
                         .HasForeignKey("PayerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("DemoDB.Model.Settlement", b =>
                 {
+                    b.HasOne("DemoDB.Model.Group", "groupsId")
+                        .WithMany("SettlmentData")
+                        .HasForeignKey("GroupId");
+
                     b.HasOne("DemoDB.Model.User", "Payer")
                         .WithMany("Payers")
                         .HasForeignKey("PayerId")
@@ -281,6 +300,23 @@ namespace DemoDB.Migrations
                     b.HasOne("DemoDB.Model.User", "SharedMember")
                         .WithMany("SharedMembers")
                         .HasForeignKey("SharedMemberId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("DemoDB.Model.Transactions", b =>
+                {
+                    b.HasOne("DemoDB.Model.Group", "groupsId")
+                        .WithMany("Transactions")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("DemoDB.Model.User", "TransPayers")
+                        .WithMany("TPayers")
+                        .HasForeignKey("TransPayersId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("DemoDB.Model.User", "TransReceivers")
+                        .WithMany("TReceivers")
+                        .HasForeignKey("TransReceiversId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

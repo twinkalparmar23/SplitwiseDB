@@ -12,10 +12,10 @@ namespace DemoDB.Model
         public int IndividualPayerid { get; set; }
 
         public int BillId { get; set; }
-        public Bill Bill { get; set; }
+        //public Bill Bill { get; set; }
 
         public int PayerId { get; set; }
-        public User User { get; set; }
+        //public User User { get; set; }
 
         public decimal PaidAmount { get; set; }
     }

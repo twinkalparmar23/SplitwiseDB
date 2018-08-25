@@ -25,11 +25,12 @@ namespace DemoDB.Database
         public DbSet<GroupMember> GroupMember {get; set;}
         public DbSet<Bill> Bill { get; set; }
         public DbSet<BillMember> BillMember { get; set; }
-        public DbSet<GroupPayer> GroupPayer { get; set; }
-        public DbSet<IndividualPayer> IndividualPayer { get; set; }
+        //public DbSet<GroupPayer> GroupPayers{ get; set; }
+        //public DbSet<IndividualPayer> IndividualPayer { get; set; }
+        public DbSet<Payer> Payer { get; set; }
         public DbSet<FriendList> FriendList { get; set; }
         public DbSet<Settlement> Settlement { get; set; }
-        public DbSet<Transaction> Transaction { get; set; }
+        public DbSet<Transactions> Transactions { get; set; }
 
     }
 }

@@ -19,13 +19,16 @@ namespace DemoDB.Model
         public DateTime CreatedDate { get; set; }
         public byte[] Image { get; set; }
 
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
         public Group Group { get; set; }
 
         [ForeignKey("BillId")]
-        public ICollection<GroupPayer> GroupPayers { get; set; }
+        public ICollection<Payer> Payers { get; set; }
 
-        [ForeignKey("BillId")]
-        public ICollection<IndividualPayer> IndividualPayers { get; set; }
+        [ForeignKey("Billid")]
+        public ICollection<BillMember> BillMembers { get; set; }
+
+        //[ForeignKey("BillId")]
+        //public ICollection<IndividualPayer> IndividualPayers { get; set; }
     }
 }

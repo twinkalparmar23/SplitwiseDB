@@ -26,6 +26,12 @@ namespace DemoDB.Model
         public ICollection<Bill> Bills { get; set; }
 
         [ForeignKey("GroupId")]
-        public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Transactions> Transactions { get; set; }
+
+        [ForeignKey("GroupId")]
+        public ICollection<Settlement> SettlmentData { get; set; }
+
+        // [ForeignKey("GroupId")]
+        //public ICollection<TransactionRecord> Transaction { get; set; }
     }
 }

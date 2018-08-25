@@ -28,10 +28,10 @@ namespace DemoDB.Model
         public ICollection<BillMember> BillMembers { get; set; }
 
         [ForeignKey("PayerId")]
-        public ICollection<GroupPayer> GroupPayers { get; set; }
+        public ICollection<Payer> Payersdata { get; set; }
 
-        [ForeignKey("PayerId")]
-        public ICollection<IndividualPayer> IndividualPayers { get; set; }
+        //[ForeignKey("PayerId")]
+       // public ICollection<IndividualPayer> IndividualPayers { get; set; }
 
         [InverseProperty("Payer")]
         public List<Settlement> Payers { get; set; }
@@ -45,10 +45,10 @@ namespace DemoDB.Model
         [InverseProperty("friend")]
         public List<FriendList> Friends { get; set; }
 
-        [InverseProperty("payers")]
-        public List<Transaction> payers { get; set; }
+        [InverseProperty("TransPayers")]
+        public List<Transactions> TPayers { get; set; }
 
-        [InverseProperty("receivers")]
-        public List<Transaction> Receivers { get; set; }
+       [InverseProperty("TransReceivers")]
+        public List<Transactions> TReceivers { get; set; }
     }
 }

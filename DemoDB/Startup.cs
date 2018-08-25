@@ -1,4 +1,5 @@
 using DemoDB.Database;
+using DemoDB.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,19 @@ namespace DemoDB
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFriendListRepository, FriendListRepository>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IBillRepository, BillRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ISettlementRepository, SettlementRepository>();
+
+            services.AddMvc().AddJsonOptions(options => {
+                options.SerializerSettings.ReferenceLoopHandling =
+                    Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -48,6 +62,15 @@ namespace DemoDB
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors((corsPolicyBuilder) =>
+            {
+                corsPolicyBuilder.AllowAnyOrigin();
+                corsPolicyBuilder.AllowAnyMethod();
+                corsPolicyBuilder.AllowAnyHeader();
+                corsPolicyBuilder.WithExposedHeaders("X-InlineCount");
+            });
+
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 

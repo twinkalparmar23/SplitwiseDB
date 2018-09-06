@@ -28,15 +28,15 @@ namespace DemoDB.Repository
 
             var sData = await _Context.Settlement.SingleOrDefaultAsync(c => c.SettlementId == id);
             settlement.Id = sData.SettlementId;
-            var Pname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.PayerId);
-            settlement.Payer = Pname.UserName;
-            var Rname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.SharedMemberId);
-            settlement.Receiver = Rname.UserName;
+           // var Pname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.PayerId);
+            settlement.Payer_id=sData.PayerId;
+           // var Rname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.SharedMemberId);
+            settlement.Receiver_id = sData.SharedMemberId;
 
             if (sData.GroupId != null)
             {
-                var Gname = await _Context.Group.SingleOrDefaultAsync(c => c.GroupId == sData.GroupId);
-                settlement.GroupName = Gname.GroupName;
+               // var Gname = await _Context.Group.SingleOrDefaultAsync(c => c.GroupId == sData.GroupId);
+                settlement.Group_id = sData.GroupId.GetValueOrDefault();
             }
 
             settlement.Amount = sData.TotalAmount;

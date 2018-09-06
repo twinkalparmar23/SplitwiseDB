@@ -27,7 +27,13 @@ namespace DemoDB
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
+            //services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            //{
+            //    builder
+            //    .AllowAnyMethod()
+            //    .AllowAnyHeader()
+            //    .WithOrigins("http://localhost:4200");
+            //}));
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFriendListRepository, FriendListRepository>();
@@ -73,6 +79,7 @@ namespace DemoDB
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            //app.UseCors("CorsPolicy");
 
             app.UseMvc(routes =>
             {

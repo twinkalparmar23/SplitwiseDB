@@ -1,0 +1,31 @@
+<div>
+  <div>
+    <nav class="navbar navbar-default" id="header">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">SplitWise</a>
+        </div>
+        <ul class="nav navbar-nav">
+          <!--  <li><a>Home</a></li>-->
+
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container">
+    <form #form="ngForm" novalidate (ngSubmit)="onSubmit(form.value)" class="form">
+      <label for="email">Email:</label><br>
+      <input type="email" name="email" [(ngModel)]="model.email">
+
+      <br><br>
+      <label for="Password">Password:</label><br>
+      <input type="password" name="Password" [(ngModel)]="model.password">
+      <br /><br />
+      <button type="submit" class="btn btn-primary" style="background-color:#6f8091;">Login</button>
+      <a [routerLink]="['/register']">
+        Register
+      </a>
+    </form>
+  </div>
+</div>

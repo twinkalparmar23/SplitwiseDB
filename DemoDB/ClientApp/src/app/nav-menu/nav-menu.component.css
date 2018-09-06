@@ -1,22 +1,91 @@
+.vertical-menu {
+    width: 243px;
+    margin-left:-40px;
+    
+}
+
+.vertical-menu li{
+  text-align:left;
+ 
+}
+
+.vertical-menu a {
+    background-color: #a1b4c6;
+    color: black;
+    display: block;
+    padding: 5px;
+    text-decoration: none;
+    margin-right:5px;
+    padding-right:0;
+    
+}
+
+.vertical-menu a:hover {
+    background-color: #ccc;
+}
+
+.vertical-menu a:active {
+    background-color: red;/*inner li*/
+    color: white;
+}
+
+.navbar-default .navbar-nav > li > a.router-link-active {
+  color: #ccc;
+  background-color: #2d0505;
+}
+
 li .glyphicon {
     margin-right: 10px;
+   
 }
 
 /* Highlighting rules for nav menu items */
 li.link-active a,
+/*li.active a,*/
 li.link-active a:hover,
 li.link-active a:focus {
-    background-color: #4189C7;
-    color: white;
+    background-color: red; 
+    color: black;
+    
 }
 
+
+li a{
+   background-color: #6f8091;
+    color: white;
+    display: block;
+    padding: 12px;;
+    text-decoration: none;
+}
+
+
+
+li a:hover{
+  background-color: #ccc;
+}
+
+
+li a:active{
+   background-color: blue; /*outer*/
+}
 /* Keep the nav menu independent of scrolling and on top of other items */
 .main-nav {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 55px;
+    left: 20px;
     right: 0;
     z-index: 1;
+    
+    
+}
+
+.navbar-brand{
+  margin-left:70%;
+  
+}
+
+.nav navbar-nav li {
+  /*padding:2px 16px;*/
 }
 
 @media (min-width: 768px) {
@@ -50,7 +119,7 @@ li.link-active a:focus {
         border-radius: 4px;
     }
     .navbar a {
-        /* If a menu item's text is too long, truncate it */
+         /*If a menu item's text is too long, truncate it*/ 
         width: 100%;
         white-space: nowrap;
         overflow: hidden;

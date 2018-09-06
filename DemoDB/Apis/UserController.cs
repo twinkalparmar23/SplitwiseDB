@@ -51,7 +51,7 @@ namespace DemoDB.Apis
 
         // GET api/user/5
         [HttpGet("{id}", Name = "GetUserRoute")]
-        [ProducesResponseType(typeof(User), 200)]
+        [ProducesResponseType(typeof(UserResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
         public async Task<ActionResult> Users(int id)
         {

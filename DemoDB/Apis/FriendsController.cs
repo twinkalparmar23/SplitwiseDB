@@ -28,6 +28,24 @@ namespace DemoDB.Apis
             _Context = context;
         }
 
+        // GET api/friends/5
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(FriendResponse), 200)]
+        [ProducesResponseType(typeof(ApiCommonResponse), 400)]
+        public async Task<ActionResult> Friend(int id)
+        {
+            try
+            {
+                var friends = await _FriendListRepository.GetFriendAsync(id);
+                return Ok(friends);
+            }
+            catch (Exception exp)
+            {
+                _Logger.LogError(exp.Message);
+                return BadRequest(new ApiCommonResponse { Status = false });
+            }
+        }
+
         // GET api/friends/all/5
         [HttpGet("all/{id}")]
         [ProducesResponseType(typeof(FriendResponse), 200)]

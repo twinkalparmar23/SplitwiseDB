@@ -1,0 +1,222 @@
+<div>
+  <div >
+    <div class="col-sm-9">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="title">Dashboard</div>
+
+          <button type="button" id="mybtn" class="btn btn-default" data-toggle="modal" data-target="#SettleModal">Settle Up</button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="SettleModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Payment Method</h4>
+                </div>
+                <div class="modal-body">
+                  <!--<button type="button" class="btn btn-primary btn-block" href="#settleForm" data-toggle="collapse">Record Payment</button>-->
+                  <br />
+                  <form #myForm="ngForm">
+                    <div style="text-align:center;">
+                      <div class="input-group" style="text-align:center;display:-webkit-inline-box;">
+                        <span><i class="glyphicon glyphicon-user" style="width:100%;"></i></span>
+                        <label>You</label>
+                      </div>
+                      <div class="input-group" style="text-align:center;display:-webkit-inline-box;top:-12px;">
+                        <span><i class="glyphicon glyphicon-arrow-right" style="width:100%;"></i></span>
+
+                      </div>
+                      <div class="input-group" style="text-align:center;display:-webkit-inline-box;">
+                        <span><i class="glyphicon glyphicon-user" style="width:100%;"></i></span>
+                        <button data-toggle="modal" data-target="#receiverModal" id="receiver">receiver</button>
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                      <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" [(ngModel)]="amount" required>
+                    </div>
+                    <div class="input-group">
+                      <label>Group:</label>
+                      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#groupModal" id="groups" style="border-radius:10px;width:110px;margin-left:8px;">Select Group</button>
+                    </div>
+                    <div class="input-group">
+                      <button type="button" class="btn btn-primary" (click)="savePayment()" [disabled]="!myForm.valid" style="margin-top:10px;margin-left:210px;">Save</button>
+                    </div>
+                  </form>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+          <!--Modal-->
+          <div id="receiverModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content" style="left:310px;">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Choose Receiver</h4>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group" *ngFor='let member of friends'>
+                    <li role="button" class="list-group-item" (click)="selectFriend(member.userId)">{{member.userName}}</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+
+
+          <div id="groupModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content" style="left:310px;">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Choose Group</h4>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group" *ngFor='let grp of groups'>
+                    <li role="button" class="list-group-item" (click)="selectGroup(grp.groupId)">{{grp.groupName}}</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+
+
+          <button type="button" id="mybtn" class="btn btn-default" data-toggle="modal" data-target="#billModel">Add Bill</button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="billModel" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Add Bill</h4>
+                </div>
+                <div class="modal-body">
+                  <form #myForm="ngForm">
+                    <div class="input-group">
+                      <label>Share with:</label>
+                      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#sharedModal" id="sharedPerson" style="border-radius:10px;width:90px;margin-left:8px;">Select</button>
+                      <div><label *ngFor='let member of SharedArray'><small id="tags">{{member.name}} <span class="glyphicon glyphicon-remove" *ngIf="member.id!=UserId" (click)="removeSharedMember(member.id)"></span></small></label></div>
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
+                      <input id="billName" type="text" class="form-control" name="billName" placeholder="Description" [(ngModel)]="AddBillModel.billName" required>
+                    </div>
+                    <div class="input-group">
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                      <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" [(ngModel)]="totalAmount" required>
+                    </div>
+                    <div class="input-group">
+                      <label>Payers:</label>
+                      <button type="button" class="btn btn-default" data-toggle="modal" data-target="#payerModal" id="payers" style="border-radius:10px;width:90px;margin-left:8px;">Payers</button>
+                    </div>
+                    <!--<div *ngFor='let member of group.members'><label *ngIf="billPayer.id==member.id">{{member.name}}</label></div>-->
+                    <div class="input-group">
+                      <button type="button" class="btn btn-primary" (click)="saveBill()" [disabled]="!myForm.valid" style="margin-top:10px;margin-left:210px;">Save</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+          <!--Modal-->
+          <div id="sharedModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content" style="left:310px;">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Choose Shared Person</h4>
+                </div>
+                <div class="modal-body">
+                  <ul class="list-group" *ngFor='let member of Members'>
+                    <li role="button" class="list-group-item" (click)="selectSharedMember(member.id,member.name)">{{member.name}}</li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+
+          <!--Modal-->
+          <div id="payerModal" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-sm">
+
+              <!-- Modal content-->
+              <div class="modal-content" style="left:310px;">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h4 class="modal-title">Choose Payers</h4>
+                </div>
+                <div class="modal-body" id="payerBody">
+                  <ul class="list-group" *ngFor='let member of SharedArray'>
+                    <li class="list-group-item" (click)="addSinglePayer(member.id)">{{member.name}}</li>
+                  </ul>
+                  <button type="button" class="btn btn-primary btn-xs" (click)="showPayer()" style="margin-top:5px;margin-bottom:5px;">Multiple Payers</button>
+
+                  <div *ngIf="showMultiplePayer">
+                    <ul class="list-group" *ngFor='let member of SharedArray'>
+                      <li class="list-group-item">{{member.name}}</li>
+
+                      <li class="list-group-item" class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                        <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" #amount>
+                      </li>
+                      <li> <a role="button" style="float:right;" (click)="addMultiplePayer(member.id,amount.value)">add</a></li>
+
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--modal close-->
+
+        </div>
+
+        <div>
+          <div class="content">
+            <!--<ul type="none">
+          <li>total balance</li>
+          <li>0.0</li>
+        </ul>-->
+            <div>total balance</div>
+            <div>0.0</div>
+          </div>
+          <div class="content">You Owe</div>
+          <div class="content">You are owed</div>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-sm-3">
+     <h1>content</h1>
+    </div>
+  </div>
+</div>

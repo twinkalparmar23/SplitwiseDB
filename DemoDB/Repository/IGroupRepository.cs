@@ -14,7 +14,7 @@ namespace DemoDB.Repository
         
         Task<GroupResponse> GetGroupAsync(int id);
         Task<List<GroupResponse>> GetGroupsAsync(int id);
-
+        Task<List<GroupResponse>> GetCommenGroupsAsync(int Userid, int Friendid);
         Task<bool> UpdateGroupAsync(Group group);
         Task<bool> DeleteGroupAsync(int id);
         Task<GroupMember> InsertGroupMemberAsync(int Groupid, int Memberid);

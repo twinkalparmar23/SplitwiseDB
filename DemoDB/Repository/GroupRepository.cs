@@ -37,6 +37,7 @@ namespace DemoDB.Repository
             group.GroupId = groupData.GroupId;
             group.GroupName = groupData.GroupName;
             group.CreatedDate = groupData.CreatedDate;
+            group.CreatorId = groupData.CreatorId;
 
             var name = _Context.User.SingleOrDefault(c => c.UserId == groupData.CreatorId);
             group.CreatorName = name.UserName;
@@ -187,6 +188,23 @@ namespace DemoDB.Repository
                 _Logger.LogError($"Error in {nameof(UpdateGroupAsync)}: " + exp.Message);
             }
             return false;
+        }
+
+        public async Task<List<GroupResponse>> GetCommenGroupsAsync(int Userid, int Friendid)
+        {
+            List<GroupResponse> groups = new List<GroupResponse>();
+            var groupData = _Context.Group.Where(c => c.groupMembers.Any(aa => aa.User_Id == Userid)).Include(c=>c.groupMembers).ToList();
+
+            var gData = groupData.Where(c => c.groupMembers.Any(aa => aa.User_Id == Friendid)).ToList();
+
+            for (var i = 0; i < gData.Count; i++)
+            {
+                var group = new GroupResponse();
+                group = await GetGroupAsync(gData[i].GroupId);
+                groups.Add(group);
+            }
+
+            return groups;
         }
     }
 }

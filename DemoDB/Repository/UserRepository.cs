@@ -1,5 +1,6 @@
 ﻿using DemoDB.Database;
 using DemoDB.Model;
+using DemoDB.Response;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,17 +27,18 @@ namespace DemoDB.Repository
             
         }
 
-        public async Task<User> GetUserAsync(int id)
+        public async Task<UserResponse> GetUserAsync(int id)
         {
-            //var result = (from p in _Context.User
-            //              join e in _Context.FriendList
-            //              on p.UserId equals e.UserId
-            //              select e.FriendId).ToListAsync();
+            //return await _Context.User
+            //    .SingleOrDefaultAsync(c => c.UserId == id);
 
-            return await _Context.User
-                //.Include(c => c.Friends)
-
-                .SingleOrDefaultAsync(c => c.UserId == id);
+            var userData = await _Context.User.SingleOrDefaultAsync(c => c.UserId == id);
+            var user = new UserResponse();
+            user.UserId = userData.UserId;
+            user.UserName = userData.UserName;
+            user.Email = userData.Email;
+            user.Password = userData.Password;
+            return user;
         }
 
         public async Task<User> InsertUserAsync(User user)

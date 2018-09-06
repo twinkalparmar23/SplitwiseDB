@@ -7,8 +7,8 @@ namespace DemoDB.Response
 {
     public class FriendResponse
     {
-        public int Id;
-        public string Name;
+        public int UserId;
+        public string UserName;
         public string Email;
     }
 }

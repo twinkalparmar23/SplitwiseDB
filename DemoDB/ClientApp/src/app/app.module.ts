@@ -1,34 +1,57 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-
+import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
-import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { LoginComponent } from './login/login.component';
+import { RoutingModule } from './/routing.module';
+import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
-import { CounterComponent } from './counter/counter.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { AppService } from './service/app.service';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { FriendComponent } from './friend/friend.component';
+import { GroupComponent } from './group/group.component';
+import { AddGroupComponent } from './add-group/add-group.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { EditGroupComponent } from './edit-group/edit-group.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent,
+    LoginComponent,
+    RegisterComponent,
     HomeComponent,
-    CounterComponent,
-    FetchDataComponent
+    NavMenuComponent,
+    DashboardComponent,
+    FriendComponent,
+    GroupComponent,
+    AddGroupComponent,
+    EditUserComponent,
+    EditGroupComponent,
+   
+    
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
-    ])
+    HttpModule,
+    HttpClientModule,
+    //RouterModule.forRoot([
+    //  { path: '', component: LoginComponent, pathMatch: 'full' },
+    //  //{ path: 'counter', component: CounterComponent },
+    // // { path: 'fetch-data', component: FetchDataComponent },
+    //]),
+    RoutingModule
+   
+   
   ],
-  providers: [],
+  providers: [AppService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

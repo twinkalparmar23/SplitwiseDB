@@ -31,6 +31,7 @@ namespace DemoDB.Repository
 
 
             var billData = _Context.Bill.SingleOrDefault(c => c.BillId == id);
+            bill.BillId = billData.BillId;
             bill.BillName = billData.BillName;
             bill.CreatedDate = billData.CreatedDate;
             bill.GroupId = billData.GroupId.GetValueOrDefault();
@@ -96,82 +97,137 @@ namespace DemoDB.Repository
                 _Context.BillMember.Add(member);
             }
 
-
-            if (newBill.GroupId == null)
+            foreach (var data in bill.SettleModels)
             {
-                foreach (var person in bill.Payer)
+                if (data.GroupId == null)
                 {
-                    foreach (var member in bill.SharedMember)
+                    var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == data.PayerId && c.SharedMemberId == data.SharedMemberId && c.GroupId==null);
+                    if (settle != null)
                     {
-                        if (person.Id != member.Id)
+                        settle.TotalAmount = settle.TotalAmount + data.TotalAmount;
+                        _Context.Settlement.Attach(settle);
+                    }
+                    else
+                    {
+                        var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == data.SharedMemberId && c.SharedMemberId == data.PayerId && c.GroupId == null);
+                        if (setle != null)
                         {
-                            Settlement settlement = new Settlement();
-                            settlement.PayerId = member.Id;
-                            settlement.SharedMemberId = person.Id;
-                            settlement.TotalAmount = member.Amount;
-
-                            var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.PayerId && c.SharedMemberId == settlement.SharedMemberId && c.GroupId==null);
-                            if (settle != null)
-                            {
-                                settle.TotalAmount = settle.TotalAmount + settlement.TotalAmount;
-                                _Context.Settlement.Attach(settle);
-                            }
-                            else
-                            {
-                                var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.SharedMemberId && c.SharedMemberId == settlement.PayerId && c.GroupId == null);
-                                if (setle != null)
-                                {
-                                    setle.TotalAmount = setle.TotalAmount - settlement.TotalAmount;
-                                    _Context.Settlement.Attach(setle);
-                                }
-                                else
-                                {
-                                    _Context.Settlement.Add(settlement);
-                                }
-                            }
-
+                            setle.TotalAmount = setle.TotalAmount - data.TotalAmount;
+                            _Context.Settlement.Attach(setle);
+                        }
+                        else
+                        {
+                            var newSettle = new Settlement();
+                            newSettle.PayerId = data.PayerId;
+                            newSettle.SharedMemberId = data.SharedMemberId;
+                            newSettle.TotalAmount = data.TotalAmount;
+                            _Context.Settlement.Add(newSettle);
+                        }
+                    }
+                }
+                else
+                {
+                    var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == data.PayerId && c.SharedMemberId == data.SharedMemberId && c.GroupId == data.GroupId);
+                    if (settle != null)
+                    {
+                        settle.TotalAmount = settle.TotalAmount + data.TotalAmount;
+                        _Context.Settlement.Attach(settle);
+                    }
+                    else
+                    {
+                        var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == data.SharedMemberId && c.SharedMemberId == data.PayerId && c.GroupId == data.GroupId);
+                        if (setle != null)
+                        {
+                            setle.TotalAmount = setle.TotalAmount - data.TotalAmount;
+                            _Context.Settlement.Attach(setle);
+                        }
+                        else
+                        {
+                            var newSettle = new Settlement();
+                            newSettle.PayerId = data.PayerId;
+                            newSettle.SharedMemberId = data.SharedMemberId;
+                            newSettle.TotalAmount = data.TotalAmount;
+                            newSettle.GroupId = data.GroupId;
+                            _Context.Settlement.Add(newSettle);
                         }
                     }
                 }
             }
-            else
-            {
-                foreach (var person in bill.Payer)
-                {
-                    foreach (var member in bill.SharedMember)
-                    {
-                        if (person.Id != member.Id)
-                        {
-                            Settlement settlement = new Settlement();
-                            settlement.GroupId = newBill.GroupId;
-                            settlement.PayerId = member.Id;
-                            settlement.SharedMemberId = person.Id;
-                            settlement.TotalAmount = member.Amount;
+            //if (newBill.GroupId == null)
+            //{
+            //    foreach (var person in bill.Payer)
+            //    {
+            //        foreach (var member in bill.SharedMember)
+            //        {
+            //            if (person.Id != member.Id)
+            //            {
+            //                Settlement settlement = new Settlement();
+            //                settlement.PayerId = member.Id;
+            //                settlement.SharedMemberId = person.Id;
+            //                settlement.TotalAmount = member.Amount;
 
-                            var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.PayerId && c.SharedMemberId == settlement.SharedMemberId && c.GroupId == settlement.GroupId);
-                            if (settle != null)
-                            {
-                                settle.TotalAmount = settle.TotalAmount + settlement.TotalAmount;
-                                _Context.Settlement.Attach(settle);
-                            }
-                            else
-                            {
-                                var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.SharedMemberId && c.SharedMemberId == settlement.PayerId && c.GroupId == settlement.GroupId);
-                                if (setle != null)
-                                {
-                                    setle.TotalAmount = setle.TotalAmount - settlement.TotalAmount;
-                                    _Context.Settlement.Attach(setle);
-                                }
-                                else
-                                {
-                                    _Context.Settlement.Add(settlement);
-                                }
-                            }
-                        }
-                    }
-                }
+            //                var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.PayerId && c.SharedMemberId == settlement.SharedMemberId && c.GroupId==null);
+            //                if (settle != null)
+            //                {
+            //                    settle.TotalAmount = settle.TotalAmount + settlement.TotalAmount;
+            //                    _Context.Settlement.Attach(settle);
+            //                }
+            //                else
+            //                {
+            //                    var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.SharedMemberId && c.SharedMemberId == settlement.PayerId && c.GroupId == null);
+            //                    if (setle != null)
+            //                    {
+            //                        setle.TotalAmount = setle.TotalAmount - settlement.TotalAmount;
+            //                        _Context.Settlement.Attach(setle);
+            //                    }
+            //                    else
+            //                    {
+            //                        _Context.Settlement.Add(settlement);
+            //                    }
+            //                }
 
-            }
+            //            }
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    foreach (var person in bill.Payer)
+            //    {
+            //        foreach (var member in bill.SharedMember)
+            //        {
+            //            if (person.Id != member.Id)
+            //            {
+            //                Settlement settlement = new Settlement();
+            //                settlement.GroupId = newBill.GroupId;
+            //                settlement.PayerId = member.Id;
+            //                settlement.SharedMemberId = person.Id;
+            //                settlement.TotalAmount = member.Amount;
+
+            //                var settle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.PayerId && c.SharedMemberId == settlement.SharedMemberId && c.GroupId == settlement.GroupId);
+            //                if (settle != null)
+            //                {
+            //                    settle.TotalAmount = settle.TotalAmount + settlement.TotalAmount;
+            //                    _Context.Settlement.Attach(settle);
+            //                }
+            //                else
+            //                {
+            //                    var setle = await _Context.Settlement.SingleOrDefaultAsync(c => c.PayerId == settlement.SharedMemberId && c.SharedMemberId == settlement.PayerId && c.GroupId == settlement.GroupId);
+            //                    if (setle != null)
+            //                    {
+            //                        setle.TotalAmount = setle.TotalAmount - settlement.TotalAmount;
+            //                        _Context.Settlement.Attach(setle);
+            //                    }
+            //                    else
+            //                    {
+            //                        _Context.Settlement.Add(settlement);
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+
+            //}
             try
             {
                 await _Context.SaveChangesAsync();

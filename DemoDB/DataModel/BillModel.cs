@@ -18,5 +18,6 @@ namespace DemoDB.DataModel
         public List<PayerModel> Payer { get; set; }
         public List<PayerModel> SharedMember { get; set; }
 
+        public List<SettleModel> SettleModels { get; set; }
     }
 }

@@ -21,6 +21,19 @@ namespace DemoDB.Repository
             _Logger = loggerFactory.CreateLogger("FriendListRepository");
         }
 
+        public async Task<FriendResponse> GetFriendAsync(int id)
+        {
+            //return await _Context.User
+            //    .SingleOrDefaultAsync(c => c.UserId == id);
+
+            var userData = await _Context.User.SingleOrDefaultAsync(c => c.UserId == id);
+            var user = new FriendResponse();
+            user.UserId = userData.UserId;
+            user.UserName = userData.UserName;
+            user.Email = userData.Email;
+            return user;
+        }
+
         public async Task<List<FriendResponse>> GetAllFriendsAsync(int id)
         {
             return await _Context.FriendList
@@ -28,8 +41,8 @@ namespace DemoDB.Repository
                     .Select(c => new FriendResponse()
                     {
                         
-                        Id = c.FriendId,
-                        Name= c.friend.UserName,
+                        UserId = c.FriendId,
+                        UserName= c.friend.UserName,
                         Email=c.friend.Email
 
                     }

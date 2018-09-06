@@ -67,6 +67,25 @@ namespace DemoDB.Apis
             }
         }
 
+        // GET api/group/all/userid
+        [HttpGet("all/{Userid}/{Friendid}")]
+        [ProducesResponseType(typeof(List<GroupResponse>), 200)]
+        [ProducesResponseType(typeof(ApiCommonResponse), 400)]
+        public async Task<ActionResult> CommenGroups(int Userid,int Friendid)
+        {
+
+            try
+            {
+                var groups = await _GroupRepository.GetCommenGroupsAsync(Userid, Friendid);
+                return Ok(groups);
+            }
+            catch (Exception exp)
+            {
+                _Logger.LogError(exp.Message);
+                return BadRequest(new ApiCommonResponse { Status = false });
+            }
+        }
+
         // POST api/group
         [HttpPost]
         [ProducesResponseType(typeof(ApiCommonResponse), 201)]

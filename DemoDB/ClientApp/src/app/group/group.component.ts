@@ -1,0 +1,394 @@
+import { Component, OnInit, group } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AppService } from '../service/app.service';
+import { Bill } from '../Model/Bill';
+import { forEach } from '@angular/router/src/utils/collection';
+import { strictEqual } from 'assert';
+import { Group, GroupResponse } from '../Model/Group';
+import { AddBill, member } from '../Model/AddBill';
+import { Settle, Balance } from '../Model/Settle';
+
+
+@Component({
+  selector: 'app-group',
+  templateUrl: './group.component.html',
+  styleUrls: ['./group.component.css']
+})
+export class GroupComponent implements OnInit {
+
+  UserId: number;
+  groupId: number;
+  group = new GroupResponse();
+
+  AddBillModel = new AddBill();
+  billPayer= new member();
+  billPayers: member[] = [];
+  totalAmount: number;
+  memberCount: number;
+  sharedAmount: number;
+  sharedMembers: member[] = [];
+  settlements: Settle[] = [];
+  payer: member[] = [];
+  payee: member[] = [];
+  showMultiplePayer: boolean = false;
+ 
+  groupBills: Bill;
+  groupEditModel = new Group();
+  billId: any[] = [];
+  groupMember: any[] = [];
+  friends: any[] = [];
+  addedMembers: number[] = [];
+  removedMembers: number[] = [];
+  showSettingData: boolean = false;
+  
+
+
+  balance: Balance[] = [];
+  TotalBalance: any[] = [];
+
+  constructor(private _appService: AppService, private route: ActivatedRoute) {
+
+  }
+
+  ngOnInit() {
+    
+    this.route.parent.params.subscribe(params => {
+      this.UserId = +params['id'];
+    });
+    console.log(this.UserId);
+
+    this.groupId = this.route.snapshot.params['id'];
+    this._appService.getGroupDetails(this.groupId).subscribe((data: any) => {
+      //console.log(data);
+      this.group = data;
+      this.groupMember = data.members;
+      for (var i in this.groupMember) {
+        this.groupMember[i] = { "id": this.groupMember[i].id, "name": this.groupMember[i].name, "removed": false };
+      }
+      for (var i in this.groupMember) {
+        this.TotalBalance[i] = { "id": this.groupMember[i].id, "name": this.groupMember[i].name, "balance": Number(0) };
+      }
+
+      this._appService.getGroupBalance(this.groupId).subscribe((data: any) => {
+        this.balance = data;
+        console.log(this.balance);
+        for (var i = 0; i < this.balance.length; i++) {
+          var pId = this.TotalBalance.find(x => x.id === +this.balance[i].payer_id);
+          var rId = this.TotalBalance.find(x => x.id === +this.balance[i].receiver_id);
+          if (this.balance[i].amount > 0) {
+            pId.balance = pId.balance + this.balance[i].amount;
+            rId.balance = rId.balance - this.balance[i].amount;
+          }
+          else {
+            rId.balance = rId.balance + Math.abs(this.balance[i].amount);
+            pId.balance = pId.balance - Math.abs(this.balance[i].amount);
+          }
+        }
+      });
+
+
+      console.log(this.groupMember)
+    });
+
+    this._appService.getGroupBills(this.groupId).subscribe((data: any) => {
+      this.groupBills = data;
+      for (var i = 0; i < data.length; i++) {
+        this.billId[i] = { "id": data[i].billId, "status": false };
+      }
+
+      console.log(this.billId);
+    });
+
+    this._appService.getAllFriends(this.UserId).subscribe((data: any) => {
+      this.friends = data;
+      for (var i = 0; i < data.length; i++) {
+        this.friends[i] = { "id": data[i].userId, "name": this.friends[i].userName, "added": false };
+      }
+    });
+    // this.showdiv = false;
+
+    
+    console.log(this.TotalBalance);
+  }
+
+  show(billId: number) {
+    var bill = this.billId.find((item: any) => item.id === +billId);
+    console.log(bill);
+    if (bill.status == false) {
+      bill.status = true;
+    }
+    else {
+      bill.status = false;
+    }
+  }
+
+  check(billId: number) {
+    var bill = this.billId.find((item: any) => item.id === +billId);
+    return bill.status;
+  }
+
+  showSetting() {
+    if (this.showSettingData == false) {
+      this.showSettingData = true;
+    }
+    else {
+      this.showSettingData = false;
+    }
+  }
+
+  removeMember(id: number) {
+    var m = this.groupMember.find(item => item.id === +id);
+    if (m.removed == false) {
+      m.removed = true;
+    }
+    else {
+      m.removed = false;
+    }
+  }
+
+  checkMember(id: number) {
+    var m = this.groupMember.find(item => item.id === +id);
+    return m.removed;
+  }
+
+  AddMember(id: number) {
+    var m = this.friends.find(item => item.id === +id);
+    if (m.added == false) {
+      m.added = true;
+    }
+    else {
+      m.added = false;
+    }
+  }
+
+  checkAddedMember(id: number) {
+    var m = this.friends.find(item => item.id === +id);
+    return m.added;
+  }
+
+
+  onSubmit() {
+    for (var i = 0; i < this.friends.length; i++) {
+      if (this.friends[i].added == true) {
+        this.addedMembers.push(this.friends[i].id);
+      }
+    }
+
+    for (var i = 0; i < this.groupMember.length; i++) {
+      if (this.groupMember[i].removed == true) {
+        this.removedMembers.push(this.groupMember[i].id);
+      }
+    }
+    console.log(this.addedMembers);
+    console.log(this.removedMembers);
+
+    for (var i = 0; i < this.removedMembers.length; i++) {
+      this._appService.removeGroupMember(this.groupId, this.removedMembers[i]).subscribe();
+    }
+
+    this.groupEditModel.groupId = this.group.groupId;
+    this.groupEditModel.groupName = this.group.groupName;
+    this.groupEditModel.createdDate = this.group.createdDate;
+    this.groupEditModel.creatorId = this.group.creatorId;
+
+    this._appService.editGroup(this.groupEditModel).subscribe();
+
+    for (var i = 0; i < this.addedMembers.length; i++) {
+      this._appService.addGroupMember(this.groupId, this.addedMembers[i]).subscribe();
+    }
+    alert("Group Updated successfully..");
+    this.showSettingData = false;
+    this.ngOnInit();
+    //console.log(this.groupEditModel);
+
+  }
+
+  onCancel() {
+    this.showSettingData = false;
+  }
+
+  
+
+  showPayer() {
+    document.getElementById("payers").innerText = "Multiple";
+    if (this.showMultiplePayer == false) {
+      this.showMultiplePayer = true;
+    }
+    else {
+      this.showMultiplePayer = false;
+    }
+  }
+
+  addSinglePayer(id: number) {
+    
+    this.billPayer = new member();
+    this.billPayer.id = id;
+    this.billPayer.amount = this.totalAmount;
+    
+    this.billPayers = [];
+
+    let x = this.groupMember.find(y => y.id === this.billPayer.id);
+    document.getElementById("payers").innerText = x.name;
+  }
+
+  addMultiplePayer(id: number, amount: number) {
+   
+    let x = new member();
+    x.id = id;
+    x.amount = amount;
+    this.billPayers.push(x);
+    this.billPayer = null;
+    
+  }
+
+  saveBill() {
+   // this.memberCount = this.groupMember.length;
+    //console.log("members:" + this.memberCount);
+    //var total = 0;
+
+    this.AddBillModel.creatorId = this.UserId;
+    this.AddBillModel.groupId = this.groupId;
+    this.AddBillModel.createdDate = new Date().toLocaleString();
+
+    this.sharedAmount = this.totalAmount / this.groupMember.length;
+    //console.log("shared amount:" + this.sharedAmount);
+
+    for (var i = 0; i < this.groupMember.length; i++) {
+      let x = new member();
+      x.id = this.groupMember[i].id;
+      x.amount = this.sharedAmount;
+      this.sharedMembers.push(x);
+    }
+    this.AddBillModel.sharedMember = this.sharedMembers;
+
+
+    if (this.billPayer != null) {
+      this.AddBillModel.payer = [];
+      this.AddBillModel.payer.push(this.billPayer);
+
+      for (var i = 0; i < this.groupMember.length;i++) {
+        if (this.groupMember[i].id != this.billPayer.id) {
+          let settle = new Settle();
+          settle.GroupId = this.groupId;
+          settle.PayerId = this.groupMember[i].id;
+          settle.SharedMemberId = this.billPayer.id;
+          settle.TotalAmount = this.sharedAmount;
+          this.settlements.push(settle);
+        }
+      }
+      this.AddBillModel.SettleModels = this.settlements;
+    }
+    else
+    {
+      this.AddBillModel.payer = this.billPayers;
+      
+      for (var i = 0; i < this.sharedMembers.length; i++) {
+        var payerExist = this.billPayers.find(item => item.id === this.sharedMembers[i].id);
+        if (payerExist != null) {
+          if (payerExist.amount > this.sharedAmount) {
+            let x = new member();
+            x.id = this.sharedMembers[i].id;
+            x.amount = payerExist.amount - this.sharedAmount
+            this.payee.push(x);
+          }
+          else if (payerExist.amount < this.sharedAmount) {
+            let x = new member();
+            x.id = this.sharedMembers[i].id;
+            x.amount = this.sharedAmount - payerExist.amount;
+            this.payer.push(x);
+          }
+        }
+        else {
+          let x = new member();
+          x.id = this.sharedMembers[i].id;
+          x.amount = this.sharedMembers[i].amount;
+          this.payer.push(x);
+        }
+      }
+
+      //console.log(this.payee);
+     // console.log(this.payer);
+
+
+      if (this.payee.length == 1) {
+        for (var i = 0; i < this.payer.length; i++) {
+          for (var j = 0; j < this.payee.length; j++) {
+            var set = new Settle();
+            set.PayerId = this.payer[i].id;
+            set.SharedMemberId = this.payee[j].id;
+            set.GroupId = this.groupId;
+            set.TotalAmount = this.payer[i].amount;
+            this.settlements.push(set);
+          }
+        }
+      }
+      else {
+        if (this.payer.length == 1) {
+          for (var i = 0; i < this.payee.length; i++) {
+            for (var j = 0; j < this.payer.length; j++) {
+              var set = new Settle();
+              set.PayerId = this.payer[j].id;
+              set.SharedMemberId = this.payee[i].id;
+              set.GroupId = this.groupId;
+              set.TotalAmount = this.payee[i].amount;
+              this.settlements.push(set);
+            }
+          }
+        }
+        else {
+          for (var i = 0; i < this.payer.length; i++) {
+            for (var j = 0; j < this.payee.length; j++) {
+
+              var set = new Settle();
+              set.PayerId = this.payer[i].id;
+              set.SharedMemberId = this.payee[j].id;
+              set.GroupId = this.groupId;
+
+              if (this.payee[j].amount < this.payer[i].amount) {
+                
+                set.TotalAmount = this.payee[j].amount;
+                if (set.TotalAmount != 0) {
+                  this.settlements.push(set);
+                }
+                this.payee[j].amount = this.payee[j].amount - set.TotalAmount;
+                this.payer[i].amount = this.payer[i].amount - set.TotalAmount;
+              }
+              else if (this.payee[j].amount > this.payer[i].amount) {
+                set.TotalAmount = this.payer[i].amount;
+                if (set.TotalAmount != 0) {
+                  this.settlements.push(set);
+                }
+                this.payer[i].amount = this.payer[i].amount - set.TotalAmount;
+                this.payee[j].amount = this.payee[j].amount - set.TotalAmount;
+              }
+              else {  //equal
+                set.TotalAmount = this.payer[i].amount;
+                if (set.TotalAmount != 0) {
+                  this.settlements.push(set);
+                }
+                this.payer[i].amount = this.payer[i].amount - set.TotalAmount;
+                this.payee[j].amount = this.payee[i].amount - set.TotalAmount;
+              }
+            }
+          }
+        }
+      }
+
+      console.log("settlements:");
+      console.log(this.settlements);
+      this.AddBillModel.SettleModels = this.settlements;
+    }
+
+    console.log(this.AddBillModel);
+    this._appService.addBill(this.AddBillModel).subscribe();
+    this.settlements = [];
+    this.billPayers = [];
+    this.sharedMembers = [];
+    this.payer = [];
+    this.payee = [];
+    this.AddBillModel.billName = '';
+    this.totalAmount = 0;
+    
+  }
+
+}

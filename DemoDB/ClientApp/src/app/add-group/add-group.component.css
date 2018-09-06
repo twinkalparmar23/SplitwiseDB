@@ -1,0 +1,14 @@
+.col-sm-9{
+  
+  /*border-left-style:solid;
+  border-top:solid;*/
+  
+  padding-left:30px;
+  height:530px;
+  width:100%;
+  background-color:#f2f2f2;
+}
+
+pre{
+  /*width:135px;*/
+}

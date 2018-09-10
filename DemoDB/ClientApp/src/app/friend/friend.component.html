@@ -86,19 +86,26 @@
         <div *ngFor='let bill of IndividualBills'>
           <div>
             <div class="content">
-              <div style="text-align:left;padding-left:20px;"><a role="button" href="#{{bill.billId}}" data-toggle="collapse" class="title">{{bill.billName}}</a></div>
+              <!--<div style="text-align:left;padding-left:20px;"><a role="button" href="#{{bill.billId}}" data-toggle="collapse" class="title">{{bill.billName}}</a></div>-->
+              <div style="padding-left:20px;"><a class="cal">{{bill.createdDate | date: 'd'}}<small style="font-size:54%;">{{bill.createdDate | date: 'MMM'}}</small></a></div>
+              <div style="text-align:left;padding-left:20px;line-height:37px;">
+
+                <a role="button" href="#{{bill.billId}}" data-toggle="collapse" class="title">{{bill.billName}}</a>
+
+              </div>
             </div>
-            <div class="content"></div>
-            <div class="content"></div>
+            <!--<div class="content"></div>
+            <div class="content"></div>-->
           </div>
           <div id="{{bill.billId}}" class="collapse">
             <div class="billcontent">
               <h3>{{bill.billName}}</h3>
               <small>Added by:{{bill.creatorName}}</small><br />
-              <small>Date:{{bill.createdDate}}</small><br />
+              <small>Date:{{bill.createdDate | date: 'fullDate'}}</small><br />
               <!--<small>GroupName:{{bill.groupName}}</small>-->
               <hr />
               <small *ngFor='let payer of bill.payers'>{{payer.name}} paid {{payer.amount}}<br /></small>
+              <hr />
               <small *ngFor='let member of bill.billMembers'>{{member.name}} owes {{member.amount}}<br /></small>
             </div>
           </div>
@@ -107,12 +114,13 @@
       </div>
       <div class="col-sm-3">
         <div class="btn-group btn-group-xs">
-          <button type="button" id="btnSmall" class="btn btn-primary"><span class="glyphicon glyphicon-th-list"></span></button>
-          <button type="button" id="btnSmall" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>
+          <!--<button type="button" id="btnSmall" class="btn btn-primary"><span class="glyphicon glyphicon-th-list"></span></button>
+          <button type="button" id="btnSmall" class="btn btn-primary"><span class="glyphicon glyphicon-cog"></span></button>-->
+          <button type="button" id="btnSmall" (click)="deleteFriend()" class="btn btn-primary"><span class="glyphicon glyphicon-trash"></span></button>
         </div>
         <br /><br />
 
-        <div class="title">Your Balance</div>
+        <div class="title" style="font-size:17px;">Your Balance</div>
         <div class="listGrp" >
           <div style="width:100%;">
             <div *ngIf="this.TotalBalance.amount<0" style="color:forestgreen">
@@ -129,7 +137,12 @@
             </div>
           </div>
         </div>
-
+        <div>
+          <div class="title" style="font-size:17px;">Details</div>
+          <ul *ngFor='let detail of details'>
+            <li><small>{{detail}}</small></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

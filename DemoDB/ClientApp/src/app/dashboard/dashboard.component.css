@@ -69,3 +69,19 @@ li.list-group-item:hover,li.list-group-item:active{
   border-radius:4px;
   color:white;
 }
+
+.dashBody{
+    width: 50%;
+    float: left;
+    padding: 8px 2px;
+    /*border-style: none solid none none;
+    border: 1px solid gainsboro;*/
+}
+
+.dashBodyTitle{
+  width: 100%;
+    background-color: gainsboro;
+    height: 30px;
+    line-height: 30px;
+    padding: 0px 12px;
+}

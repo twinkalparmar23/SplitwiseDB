@@ -74,7 +74,7 @@ export class AddGroupComponent implements OnInit {
     this.group.creatorId = this.user.userId;
     this.group.members = this.addFriend;
     this.group.createdDate = new Date().toLocaleString();
-   // console.log(this.group);
+    console.log(this.group);
 
     this._appService.addGroup(this.group).subscribe((data: any) => {
       console.log(data);

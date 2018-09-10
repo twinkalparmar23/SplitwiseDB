@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace DemoDB.Repository
 {
+
     public class SettlementRepository : ISettlementRepository
     {
         private readonly DemoDbContext _Context;
@@ -28,16 +29,27 @@ namespace DemoDB.Repository
 
             var sData = await _Context.Settlement.SingleOrDefaultAsync(c => c.SettlementId == id);
             settlement.Id = sData.SettlementId;
-           // var Pname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.PayerId);
+
+            var Pname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.PayerId);
+            settlement.PayerName = Pname.UserName;
             settlement.Payer_id=sData.PayerId;
-           // var Rname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.SharedMemberId);
+
+            var Rname = await _Context.User.SingleOrDefaultAsync(c => c.UserId == sData.SharedMemberId);
             settlement.Receiver_id = sData.SharedMemberId;
+            settlement.ReceiverName = Rname.UserName;
 
             if (sData.GroupId != null)
             {
-               // var Gname = await _Context.Group.SingleOrDefaultAsync(c => c.GroupId == sData.GroupId);
+                var Gname = await _Context.Group.SingleOrDefaultAsync(c => c.GroupId == sData.GroupId);
                 settlement.Group_id = sData.GroupId.GetValueOrDefault();
+                settlement.GroupName = Gname.GroupName;
             }
+            else
+            {
+                settlement.Group_id = 0;
+                settlement.GroupName = "Nongroup Expense";
+            }
+            
 
             settlement.Amount = sData.TotalAmount;
 
@@ -78,5 +90,21 @@ namespace DemoDB.Repository
             return settlements;
         }
 
+        
+
+        public async Task<List<SettlementResponse>> GetAllSettlementAsync(int id)
+        {
+            List<SettlementResponse> settlements = new List<SettlementResponse>();
+            var sData = await _Context.Settlement.Where(c => c.PayerId == id || c.SharedMemberId == id).ToListAsync();
+
+            for (var i = 0; i < sData.Count; i++)
+            {
+                var settle = new SettlementResponse();
+                settle = await GetSettlementAsync(sData[i].SettlementId);
+                settlements.Add(settle);
+            }
+
+            return settlements;
+        }
     }
 }

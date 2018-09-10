@@ -36,51 +36,135 @@ namespace DemoDB.Repository
 
         public async Task<List<FriendResponse>> GetAllFriendsAsync(int id)
         {
-            return await _Context.FriendList
-                     .Where(c => c.UserId == id)
-                    .Select(c => new FriendResponse()
-                    {
-                        
-                        UserId = c.FriendId,
-                        UserName= c.friend.UserName,
-                        Email=c.friend.Email
+            //return await _Context.FriendList
+            //         .Where(c => c.UserId == id )
+            //        .Select(c => new FriendResponse()
+            //        {
 
-                    }
-                ).ToListAsync();
+            //            UserId = c.FriendId,
+            //            UserName= c.friend.UserName,
+            //            Email=c.friend.Email
+
+            //        }
+            //    ).ToListAsync();
+
+            List<FriendResponse> friends = new List<FriendResponse>();
+
+            var fData = await _Context.FriendList.Where(c => c.UserId == id || c.FriendId == id).ToListAsync();
+            for(var i = 0; i < fData.Count; i++)
+            {
+                if (fData[i].UserId == id)
+                {
+                    var x = new FriendResponse();
+                    x.UserId = fData[i].FriendId;
+                    var data = await _Context.User.SingleOrDefaultAsync(c => c.UserId == x.UserId);
+                    x.UserName = data.UserName;
+                    x.Email = data.UserName;
+                    friends.Add(x);
+                }
+                else
+                {
+                    var x = new FriendResponse();
+                    x.UserId = fData[i].UserId;
+                    var data = await _Context.User.SingleOrDefaultAsync(c => c.UserId == x.UserId);
+                    x.UserName = data.UserName;
+                    x.Email = data.UserName;
+                    friends.Add(x);
+                }
+            }
+            return friends;
 
         }
 
-        public async Task<FriendList> InsertFriendAsync(int Userid, int Friendid)
+        public async Task<FriendList> InsertFriendAsync(int id, string userName, string email)
         {
-            var member = _Context.FriendList.SingleOrDefault(c => c.UserId == Userid && c.FriendId == Friendid);
-
-            if(member== null)
+            var userExist = _Context.User.SingleOrDefault(c => c.UserName == userName && c.Email == email);
+            if (userExist != null)
             {
-                FriendList newFriend = new FriendList
+                var member = _Context.FriendList.SingleOrDefault(c => c.UserId == id && c.FriendId == userExist.UserId);
+                if (member == null)
                 {
-                    UserId = Userid,
-                    FriendId = Friendid
-                };
-
-                _Context.FriendList.Add(newFriend);
-                await _Context.SaveChangesAsync();
-                return newFriend;
+                    var memExist= _Context.FriendList.SingleOrDefault(c => c.UserId==userExist.UserId && c.FriendId==id);
+                    if (memExist == null)
+                    {
+                        FriendList newFriend = new FriendList
+                        {
+                            UserId = id,
+                            FriendId = userExist.UserId
+                        };
+                        _Context.FriendList.Add(newFriend);
+                        await _Context.SaveChangesAsync();
+                        return newFriend;
+                    }
+                    else
+                    {
+                        _Context.FriendList.Attach(memExist);
+                        await _Context.SaveChangesAsync();
+                        return memExist;
+                    }
+                }
+                else
+                {
+                    _Context.FriendList.Attach(member);
+                    await _Context.SaveChangesAsync();
+                    return member;
+                }
             }
-
             else
             {
-                _Context.FriendList.Attach(member);
-                await _Context.SaveChangesAsync();
-                return member;
+                FriendList notExist = new FriendList
+                {
+                    UserId = 0,
+                    FriendId = 0
+                };
+                return notExist;
             }
+            //var member = _Context.FriendList.SingleOrDefault(c => c.UserId == Userid && c.FriendId == Friendid);
+
+            //if(member== null)
+            //{
+            //    var exist = _Context.FriendList.SingleOrDefault(c => c.FriendId == Userid && c.UserId == Friendid);
+            //    if (exist == null)
+            //    {
+            //        FriendList newFriend = new FriendList
+            //        {
+            //            UserId = Userid,
+            //            FriendId = Friendid
+            //        };
+
+            //        _Context.FriendList.Add(newFriend);
+            //        await _Context.SaveChangesAsync();
+            //        return newFriend;
+            //    }
+            //    else
+            //    {
+            //        _Context.FriendList.Attach(exist);
+            //        await _Context.SaveChangesAsync();
+            //        return  exist;
+            //    }
+            //}
+
+            //else
+            //{
+            //    _Context.FriendList.Attach(member);
+            //    await _Context.SaveChangesAsync();
+            //    return member;
+            //}
           
         }
 
         public async Task<bool> DeleteFriendAsync(int fid, int uid)
         {
             var data = _Context.FriendList.SingleOrDefault(c => c.UserId == uid && c.FriendId == fid);
-            _Context.Remove(data);
-
+            if (data == null)
+            {
+                var fData = _Context.FriendList.SingleOrDefault(c => c.UserId == fid && c.FriendId == uid);
+                _Context.Remove(fData);
+            }
+            else
+            {
+                _Context.Remove(data);
+            }
             try
             {
                 return (await _Context.SaveChangesAsync() > 0 ? true : false);

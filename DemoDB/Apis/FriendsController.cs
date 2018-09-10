@@ -65,11 +65,11 @@ namespace DemoDB.Apis
         }
 
 
-        // POST api/friends/Userid/Friendid
-        [HttpPost("{Userid}/{Friendid}")]
+        // POST api/friends/id(user)/username(friend)/email(friend)
+        [HttpPost("{id}/{userName}/{email}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 201)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
-        public async Task<ActionResult> CreateFriend(int Userid, int Friendid)
+        public async Task<ActionResult> CreateFriend(int id, string userName, string email)
         {
             if (!ModelState.IsValid)
             {
@@ -78,14 +78,20 @@ namespace DemoDB.Apis
 
             try
             {
-                var newUser = await _FriendListRepository.InsertFriendAsync(Userid, Friendid);
+                var newUser = await _FriendListRepository.InsertFriendAsync(id,userName,email);
                 if (newUser == null)
                 {
                     return BadRequest(new ApiCommonResponse { Status = false });
                 }
-                 return CreatedAtAction("GetFriendRoute", new { id = newUser.UserId },
-                        new ApiCommonResponse { Status = true, id = newUser.UserId });
-                
+                if (newUser.UserId != 0)
+                {
+                    return CreatedAtAction("GetFriendRoute", new { id = newUser.UserId },
+                           new ApiCommonResponse { Status = true, id = newUser.FriendListId });
+                }
+                else
+                {
+                    return BadRequest( new ApiCommonResponse { Status = false, id = 0 });
+                }
                         
             }
             catch (Exception exp)

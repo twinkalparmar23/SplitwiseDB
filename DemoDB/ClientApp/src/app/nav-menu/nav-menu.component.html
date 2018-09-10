@@ -33,18 +33,18 @@
               </div>
               <div class="modal-body">
 
-                <form >
+                <form #form="ngForm" >
                   <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                    <input id="userName" type="text" class="form-control" name="userName" placeholder="UserName">
+                    <input id="userName" type="text" class="form-control" name="userName" placeholder="UserName" [(ngModel)]="FriendName" required>
                   </div>
                   <br />
                   <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                    <input id="email" type="email" class="form-control" name="email" placeholder="Email">
+                    <input id="email" type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="FriendEmail" required>
                   </div>
                   <div class="input-group" >
-                    <button type="button" class="btn btn-primary" style="margin-top:10px;margin-left:210px;" >Save</button>
+                    <button type="button" class="btn btn-primary" [disabled]="!form.valid" (click)="addFriend()" data-dismiss="modal"  style="margin-top:10px;margin-left:210px;" >Save</button>
                   </div>
 
                 </form>

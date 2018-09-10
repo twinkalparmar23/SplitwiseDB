@@ -38,7 +38,10 @@ li.list-group-item:hover,li.list-group-item:active{
   border-width:2px;  
   border-style:none solid;
   border-color:gray;
-  height:530px;
+  min-height: 530px;
+  /*height:530px;*/
+  height:auto;
+  /*flex: 1;*/
 }
 
 .title{
@@ -61,10 +64,10 @@ li.list-group-item:hover,li.list-group-item:active{
 }
 
 .content{
-  width:194px;
+  width:100%;
   float:left;
   text-align:center;
-  height:50px;
+  height:60px;
   line-height:25px;
   padding-top:13px;
   background-color:#f5f5f5;
@@ -100,4 +103,25 @@ li.list-group-item:hover,li.list-group-item:active{
   margin:8px 8px;
   /*border: 1px solid #6f8091;*/
    border-radius: 15px;
+}
+
+.cal{
+  font-size:20px;
+  color:#6f8091;
+  float:left;
+  
+  /*background-color:#6f8091;*/
+  height:35px;
+  width:47px;
+  line-height:32px;
+  margin-right:12px;
+  border: 1px solid #6f8091;
+  border-radius: 8px;
+}
+
+hr{
+  width:500px;
+  margin-left:0px;
+  margin:8px 0px;
+ border:1px solid #d6d6d6;
 }

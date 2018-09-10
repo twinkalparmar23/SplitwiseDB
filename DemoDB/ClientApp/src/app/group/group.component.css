@@ -92,7 +92,8 @@ hr{
   border-width:2px;  
   border-style:none solid;
   border-color:gray;
-  height:530px;
+   min-height: 530px;
+  height:auto;
 }
 
 .title{
@@ -142,4 +143,15 @@ hr{
   margin:8px 8px;
   /*border: 1px solid #6f8091;*/
    border-radius: 15px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+     border-spacing: 15px;
 }

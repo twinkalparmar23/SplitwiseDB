@@ -15,7 +15,8 @@ export class NavMenuComponent implements OnInit {
   @Input() UserId: number;
   friends: UserEditModel[];
   groups: any[];
-  
+  FriendName: string;
+  FriendEmail: string;
 
   ngOnInit() {
 
@@ -35,5 +36,22 @@ export class NavMenuComponent implements OnInit {
     
   }
 
+  addFriend() {
+    // console.log(this.FriendName + "  " + this.FriendEmail);
+    this._appService.addFriend(this.UserId, this.FriendName, this.FriendEmail).subscribe((data: any) => {
+      if (data.status == false) {
+        alert("not valid user...");
+      }
+      else {
+        alert("friend added..");
+      }
+    },
+      err => {
+        alert("Invalid User...please enter correct name or email...");
+      }
+    );
+    this.FriendEmail = null;
+    this.FriendName = null;
+  }
   
 }

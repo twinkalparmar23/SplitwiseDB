@@ -93,6 +93,30 @@ namespace DemoDB.Repository
                 grpMember.User_Id = member;
                 _Context.GroupMember.Add(grpMember);
             }
+
+            for(var i = 0; i < group.Members.Count-1; i++)
+            {
+                for(var j = i + 1; j < group.Members.Count; j++)
+                {
+                    var fExist = _Context.FriendList.SingleOrDefault(c => c.UserId == group.Members[i] && c.FriendId == group.Members[j]);
+                    if (fExist == null)
+                    {
+                        var Exist= _Context.FriendList.SingleOrDefault(c => c.UserId == group.Members[j] && c.FriendId == group.Members[i]);
+                        if (Exist == null)
+                        {
+                            FriendList newFriend = new FriendList
+                            {
+                                UserId = group.Members[i],
+                                FriendId = group.Members[j]
+                            };
+                            _Context.FriendList.Add(newFriend);
+                            await _Context.SaveChangesAsync();
+                        }
+                    }
+
+                }
+            }
+
             try
             {
                 await _Context.SaveChangesAsync();

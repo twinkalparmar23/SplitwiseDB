@@ -86,5 +86,23 @@ namespace DemoDB.Apis
         }
 
         
+        // GET api/settle/all/userid
+        [HttpGet("all/{id}")]
+        [ProducesResponseType(typeof(List<SettlementResponse>), 200)]
+        [ProducesResponseType(typeof(ApiCommonResponse), 400)]
+        public async Task<ActionResult> GetAllSettlements(int id)
+        {
+
+            try
+            {
+                var data = await _SettlementRepository.GetAllSettlementAsync(id);
+                return Ok(data);
+            }
+            catch (Exception exp)
+            {
+                _Logger.LogError(exp.Message);
+                return BadRequest(new ApiCommonResponse { Status = false });
+            }
+        }
     }
 }

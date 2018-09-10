@@ -5,6 +5,7 @@ import { User, UserEditModel } from '../Model/User';
 import { AddBill, member } from '../Model/AddBill';
 import { Settle, Balance } from '../Model/Settle';
 import { Bill } from '../Model/Bill';
+import { Grpmember } from '../Model/Group';
 
 @Component({
   selector: 'app-friend',
@@ -15,6 +16,7 @@ export class FriendComponent implements OnInit {
 
   UserId: number;
   friendId: number;
+  friendName: string;
   friend: UserEditModel;
 
   AddBillModel = new AddBill();
@@ -29,9 +31,11 @@ export class FriendComponent implements OnInit {
 
   IndividualBills: Bill;
   balance: Balance[] = [];
-  TotalBalance= new member();
+  TotalBalance = new member();
+  details: any[] = [];
+  groupNames: any[] = [];
 
-  constructor(private _appService: AppService, private route: ActivatedRoute) {
+  constructor(private _appService: AppService, private route: ActivatedRoute, private router: Router) {
 
     this.friendId = this.route.snapshot.params['id'];
     this.route.parent.params.subscribe(params => {
@@ -44,6 +48,7 @@ export class FriendComponent implements OnInit {
 
     this._appService.getSingleFriendDetail(this.friendId).subscribe((data: any) => {
       this.friend = data;
+      this.friendName = data.userName;
       let x = { "id": this.friend.userId, "name": this.friend.userName };
       this.members.push(x);
       
@@ -60,6 +65,19 @@ export class FriendComponent implements OnInit {
       
     });
 
+    this._appService.getCommenGroups(this.UserId, this.friendId).subscribe((data: any) => {
+      var grpdata = data;
+      console.log(grpdata);
+      for (var i = 0; i < data.length; i++) {
+        let x = new Grpmember();
+        x.id = data[i].groupId;
+        x.name = data[i].groupName;
+        this.groupNames.push(x);
+        
+      }
+      console.log(this.groupNames);
+    });
+
     this._appService.getIndividualbalance(this.UserId, this.friendId).subscribe((data: any) => {
       this.balance = data;
       console.log(this.balance);
@@ -67,25 +85,31 @@ export class FriendComponent implements OnInit {
       this.TotalBalance.amount = 0;
       
       for (var i = 0; i < this.balance.length; i++) {
-       
-        if (this.balance[i].payer_id === this.UserId) {
-          if (this.balance[i].amount > 0) {
-            this.TotalBalance.amount = this.TotalBalance.amount + this.balance[i].amount;
+        if (this.balance[i].amount != 0) {
+          if (this.balance[i].payer_id === this.UserId) {
+            if (this.balance[i].amount > 0) {
+              this.TotalBalance.amount = this.TotalBalance.amount + this.balance[i].amount;
+              this.details.push("You owe " + this.balance[i].receiverName+" " + this.balance[i].amount + " for " + this.balance[i].groupName);
+            }
+            else {
+              this.TotalBalance.amount = this.TotalBalance.amount - Math.abs(this.balance[i].amount);
+              this.details.push(this.balance[i].receiverName + " owes you " + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
+            }
           }
           else {
-            this.TotalBalance.amount = this.TotalBalance.amount - Math.abs(this.balance[i].amount);
-          }
-        }
-        else {
-          if (this.balance[i].amount > 0) {
-            this.TotalBalance.amount = this.TotalBalance.amount - this.balance[i].amount;
-          }
-          else {
-            this.TotalBalance.amount = this.TotalBalance.amount + Math.abs(this.balance[i].amount);
+            if (this.balance[i].amount > 0) {
+              this.TotalBalance.amount = this.TotalBalance.amount - this.balance[i].amount;
+              this.details.push(this.balance[i].payerName + " owes you " + this.balance[i].amount + " for " + this.balance[i].groupName)
+            }
+            else {
+              this.TotalBalance.amount = this.TotalBalance.amount + Math.abs(this.balance[i].amount);
+              this.details.push("You owe " + this.balance[i].payerName + " " + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
+            }
           }
         }
       }
       console.log(this.TotalBalance);
+      console.log(this.details);
     });
   }
 
@@ -184,5 +208,26 @@ export class FriendComponent implements OnInit {
     this.sharedMembers = [];
     this.totalAmount = 0;
     this.AddBillModel.billName = '';
+  }
+
+  deleteFriend() {
+    console.log(this.TotalBalance);
+    if (this.TotalBalance.amount == 0) {
+      return this._appService.getCommenGroups(this.UserId, this.friendId).subscribe((data: any) => {
+        if (data.length == 0) {
+          //alert("no groups in common");
+          return this._appService.removeFriend(this.UserId, this.friendId).subscribe((data: any) => {
+            alert("Friend removed..");
+            this.router.navigate(['/', this.UserId]);
+          });
+        } else {
+          alert("common groups exist...first remove friend from group");
+        }
+      });
+    }
+    else {
+      alert("Can't delete friend please settle amount first...");
+    }
+
   }
 }

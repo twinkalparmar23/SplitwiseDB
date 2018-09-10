@@ -112,7 +112,7 @@
     </div>
     <div class="col-sm-3">
       <div class="btn-group btn-group-xs">
-        <button type="button" id="btnSmall" class="btn btn-primary"><span class="glyphicon glyphicon-th-list"></span></button>
+        <button type="button" id="btnSmall" class="btn btn-primary" (click)="showBalanceTab()"><span class="glyphicon glyphicon-th-list"></span></button>
         <button type="button" id="btnSmall" class="btn btn-primary" (click)="showSetting()"><span class="glyphicon glyphicon-cog"></span></button>
       </div>
       <br /><br />
@@ -153,17 +153,72 @@
         </form>
       </div>
 
-      <div class="title" >Group Balance</div>
+      <div *ngIf="grpBalanceShow">
+        <div class="title">Group Balance</div>
+        <div class="listGrp" *ngFor='let member of TotalBalance'>
+          <div style="width:100%;">
+            <label style="width:100%;">{{member.name}}</label>
+            <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance}}</small>
+            <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance}}</small>
+            <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
+          </div>
+        </div>
+        <div><a role="button" data-toggle="modal" data-target="#DetailsModal">Details</a></div>
+      </div>
 
-      <div class="listGrp" *ngFor='let member of TotalBalance'>
-        <div style="width:100%;">
-          <label style="width:100%;">{{member.name}}</label>
-          <small style="width:100%;color:forestgreen" *ngIf="member.balance>0">gets back {{member.balance}}</small>
-          <small style="width:100%;color:red" *ngIf="member.balance<0">owes {{-member.balance}}</small>
-          <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
+      <!-- Modal -->
+      <div class="modal fade" id="DetailsModal" role="dialog">
+        <div class="modal-dialog" style="top:90px;">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" style="color:white">&times;</button>
+              <h4 class="modal-title">Group Balances</h4>
+            </div>
+            <div class="modal-body">
+              
+              <table style="width:100%"  >
+                <tr *ngFor='let member of TotalBalance'>
+                  <td >
+                    <div style="width:100%;margin-bottom:8px;">
+                      <div style="width:100%;">{{member.name}}</div>
+                      <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance}}</small>
+                      <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance}}</small>
+                      <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
+                    </div>
+                  </td>
+                  <td >
+                    <div *ngFor='let detail of details'>
+                      <!--<small *ngIf="member.id==detail.id">{{detail.name}}</small>-->
+                      <ul *ngIf="member.id==detail.id">
+                        <li>{{detail.name}}</li>
+                      </ul>
+                    </div>
+                  </td>
+                </tr>
+                
+              </table>
+              <!--<div class="row" *ngFor='let member of TotalBalance'>
+                <div>
+                  <div class="col-sm-3">
+                    <div style="width:100%;margin-bottom:8px;">
+                      <div style="width:100%;">{{member.name}}</div>
+                      <small style="width:100%;color:forestgreen" *ngIf="member.balance>0">gets back {{member.balance}}</small>
+                      <small style="width:100%;color:red" *ngIf="member.balance<0">owes {{-member.balance}}</small>
+                      <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
+                    </div>
+                  </div>
+                  <div class="col-sm-6" style="background-color:grey;" *ngFor='let detail of details'>
+                    <small *ngIf="member.id==detail.id">{{detail.name}}</small>
+                  </div>
+                </div>
+              </div>-->
+            </div>
+
         </div>
       </div>
-      
+      <!--Modal close-->
 
     </div>
   </div>

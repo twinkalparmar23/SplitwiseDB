@@ -67,7 +67,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/group/all/userid
+        // GET api/group/all/userid/friendid
         [HttpGet("all/{Userid}/{Friendid}")]
         [ProducesResponseType(typeof(List<GroupResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

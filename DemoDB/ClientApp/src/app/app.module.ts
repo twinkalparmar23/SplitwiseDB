@@ -17,8 +17,6 @@ import { FriendComponent } from './friend/friend.component';
 import { GroupComponent } from './group/group.component';
 import { AddGroupComponent } from './add-group/add-group.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
-import { EditGroupComponent } from './edit-group/edit-group.component';
-
 
 @NgModule({
   declarations: [
@@ -31,8 +29,8 @@ import { EditGroupComponent } from './edit-group/edit-group.component';
     FriendComponent,
     GroupComponent,
     AddGroupComponent,
-    EditUserComponent,
-    EditGroupComponent,
+    EditUserComponent
+    
    
     
   ],

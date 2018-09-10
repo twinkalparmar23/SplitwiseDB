@@ -25,6 +25,13 @@ export class DashboardComponent implements OnInit {
   settleRecords: Balance[] = [];
   payment=new Transaction();
 
+  oweData: number=0;
+  owesData: number=0;
+  total: number = 0;
+  allSettleRecords: Balance[] = [];
+  TotalBalance: any[] = [];
+  details: Grpmember[] = [];
+
   AddBillModel = new AddBill();
   billPayer = new member();
   billPayers: member[] = [];
@@ -68,7 +75,84 @@ export class DashboardComponent implements OnInit {
         this.Members.push(x);
       }
     });
-    console.log(this.Members);
+
+    //this._appService.getOweData(this.UserId).subscribe((data: any) => {
+    //  this.oweData = data;
+    //  this._appService.getOwesData(this.UserId).subscribe((data: any) => {
+    //    this.owesData = data;
+    //    this.total = this.owesData - this.oweData;
+    //  });
+    //});
+
+    this._appService.getAllSettldata(this.UserId).subscribe((data: any) => {
+      this.allSettleRecords = data;
+
+      this._appService.getAllFriends(this.UserId).subscribe((data: any) => {
+        this.friends = data;
+
+        for (var i = 0; i < this.friends.length; i++) {
+          this.TotalBalance[i] = { "id": this.friends[i].userId, "name": this.friends[i].userName, "balance": Number(0) };
+        }
+        //let x = { "id": this.UserId, "name": this.UserName, "balance": Number(0) };
+        //this.TotalBalance.push(x);
+
+        for (var i = 0; i < this.allSettleRecords.length; i++) {
+          if (this.allSettleRecords[i].amount != 0) {
+            if (this.allSettleRecords[i].receiver_id == this.UserId) {
+              var user = this.TotalBalance.find(x => x.id == this.allSettleRecords[i].payer_id);
+              if (this.allSettleRecords[i].amount > 0) {
+                user.balance = user.balance + this.allSettleRecords[i].amount;
+                let x = new Grpmember();
+                x.id = user.id;
+                x.name = this.allSettleRecords[i].payerName + " owe " + this.allSettleRecords[i].amount + " to " + this.allSettleRecords[i].receiverName + " for " + this.allSettleRecords[i].groupName;
+                this.details.push(x);
+              }
+              else {
+                user.balance = user.balance - Math.abs(this.allSettleRecords[i].amount);
+                let x = new Grpmember();
+                x.id = user.id;
+                x.name = this.allSettleRecords[i].receiverName + " owe " + Math.abs(this.allSettleRecords[i].amount) + " to " + this.allSettleRecords[i].payerName + " for " + this.allSettleRecords[i].groupName;
+                this.details.push(x);
+              }
+            }
+            else {
+              var user = this.TotalBalance.find(x => x.id == this.allSettleRecords[i].receiver_id);
+              if (this.allSettleRecords[i].amount > 0) {
+                user.balance = user.balance - this.allSettleRecords[i].amount;
+                let x = new Grpmember();
+                x.id = user.id;
+                x.name = this.allSettleRecords[i].payerName + " owe " + this.allSettleRecords[i].amount + " to " + this.allSettleRecords[i].receiverName + " for " + this.allSettleRecords[i].groupName;
+                this.details.push(x);
+              }
+              else {
+                user.balance = user.balance + Math.abs(this.allSettleRecords[i].amount);
+                let x = new Grpmember();
+                x.id = user.id;
+                x.name = this.allSettleRecords[i].receiverName + " owe " + Math.abs(this.allSettleRecords[i].amount) + " to " + this.allSettleRecords[i].payerName + " for " + this.allSettleRecords[i].groupName;
+                this.details.push(x);
+              }
+            }
+          }
+        }
+
+        for (var i = 0; i < this.TotalBalance.length; i++) {
+          if (this.TotalBalance[i].balance < 0) {
+            this.oweData = this.oweData + Math.abs(this.TotalBalance[i].balance);
+          }
+          else {
+            this.owesData = this.owesData + this.TotalBalance[i].balance;
+          }
+        }
+        this.total = this.owesData - this.oweData;
+        
+      });
+
+
+
+      console.log(this.allSettleRecords);
+      console.log(this.TotalBalance);
+      console.log(this.details);
+    });
   }
 
   selectFriend(id: number) {
@@ -330,6 +414,9 @@ export class DashboardComponent implements OnInit {
 
     if (this.sharedMembers.length == 1) {
       alert("can not add bill please select more users");
+    }
+    else {
+      this._appService.addBill(this.AddBillModel).subscribe();
     }
 
 

@@ -48,12 +48,26 @@ export class AppService {
     return this._httpService.put('api/user/' + user.userId, user);
   }
 
+  addFriend(id: number, name: string, email: string) {
+    return this._httpService.post('api/friends/' + id + '/' + name + '/' + email, id)
+      .pipe(map(res => res.json()))
+      .catch((error: any) => {
+        return Observable.throw(new Error(error.status));
+      });
+  }
+
   getSingleFriendDetail(id: number) {
     return this._httpService.get('api/friends/' + id)
       .pipe(map(res => res.json()));
   }
+
   getAllFriends(id: number) {
     return this._httpService.get('api/friends/all/'+id)
+      .pipe(map(res => res.json()));
+  }
+
+  removeFriend(userId: number, friendId: number) {
+    return this._httpService.delete('api/friends/' + userId + "/" + friendId)
       .pipe(map(res => res.json()));
   }
 
@@ -119,5 +133,12 @@ export class AppService {
 
   recordPayment(payment: Transaction) {
     return this._httpService.post('api/transaction', payment);
+  }
+
+  
+
+  getAllSettldata(id: number) {
+    return this._httpService.get('api/settle/all/' + id)
+      .map(res => res.json());
   }
 }

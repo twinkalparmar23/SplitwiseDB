@@ -1,5 +1,5 @@
 <div class="col-sm-9">
-  <form #form="ngForm" novalidate  class="form">
+  <form #myForm="ngForm" novalidate  class="form">
     <h1>Create Group</h1>
     <br />
    
@@ -31,6 +31,6 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary" (click)="onSubmit()">Save</button>
+      <button type="submit" class="btn btn-primary" [disabled]="!myForm.valid"  (click)="onSubmit()">Save</button>
   </form>
 </div>

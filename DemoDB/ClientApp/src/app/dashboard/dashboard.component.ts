@@ -225,7 +225,9 @@ export class DashboardComponent implements OnInit {
       this.payment.createdDate = new Date().toLocaleString();
     }
     console.log(this.payment);
-    this._appService.recordPayment(this.payment).subscribe();
+    this._appService.recordPayment(this.payment).subscribe((data: any) => {
+      alert("Payment recorded..");
+    });
     this.amount = 0;
   }
 

@@ -36,6 +36,7 @@ export class GroupComponent implements OnInit {
   groupEditModel = new Group();
   billId: any[] = [];
   groupMember: any[] = [];
+  AddGroupMembers: any[] = [];
   friends: any[] = [];
   addedMembers: number[] = [];
   removedMembers: number[] = [];
@@ -47,7 +48,9 @@ export class GroupComponent implements OnInit {
   TotalBalance: any[] = [];
   details:Grpmember[]=[];
 
-  constructor(private _appService: AppService, private route: ActivatedRoute) {
+  transactions: any[] = [];
+
+  constructor(private _appService: AppService, private route: ActivatedRoute, private router: Router) {
 
   }
 
@@ -74,38 +77,40 @@ export class GroupComponent implements OnInit {
         this.balance = data;
         console.log(this.balance);
         for (var i = 0; i < this.balance.length; i++) {
-          var pId = this.TotalBalance.find(x => x.id === +this.balance[i].payer_id);
-          var rId = this.TotalBalance.find(x => x.id === +this.balance[i].receiver_id);
-          if (this.balance[i].amount > 0) {
-            pId.balance = pId.balance + this.balance[i].amount;
-            let x = new Grpmember();
-            x.id = pId.id;
-            x.name = this.balance[i].payerName + " owes " + this.balance[i].amount + " to " + this.balance[i].receiverName;
-            this.details.push(x);
-            
-            rId.balance = rId.balance - this.balance[i].amount;
-            let y = new Grpmember();
-            y.id = rId.id;
-            y.name = this.balance[i].payerName + " owes " + this.balance[i].receiverName + " " + this.balance[i].amount
-            this.details.push(y);
-            
-          }
-          else  {
-            rId.balance = rId.balance + Math.abs(this.balance[i].amount);
-            let x = new Grpmember();
-            x.id = rId.id;
-            
-            x.name = this.balance[i].receiverName + " owes " + this.balance[i].payerName + " " + Math.abs(this.balance[i].amount);
-            this.details.push(x);
+          if (this.balance[i].amount != 0) {
+            var pId = this.TotalBalance.find(x => x.id === +this.balance[i].payer_id);
+            var rId = this.TotalBalance.find(x => x.id === +this.balance[i].receiver_id);
+            if (this.balance[i].amount > 0) {
+              pId.balance = pId.balance + this.balance[i].amount;
+              let x = new Grpmember();
+              x.id = pId.id;
+              x.name = this.balance[i].payerName + " owes ₹" + this.balance[i].amount + " to " + this.balance[i].receiverName;
+              this.details.push(x);
 
-            
-            pId.balance = pId.balance - Math.abs(this.balance[i].amount);
-            let y = new Grpmember();
-            y.id = pId.id;
-            y.name = this.balance[i].receiverName + " owes " + Math.abs(this.balance[i].amount) + " to " + this.balance[i].payerName;
-            this.details.push(y);
-            
+              rId.balance = rId.balance - this.balance[i].amount;
+              let y = new Grpmember();
+              y.id = rId.id;
+              y.name = this.balance[i].payerName + " owes " + this.balance[i].receiverName + " ₹" + this.balance[i].amount
+              this.details.push(y);
+
+            }
+            else {
+              rId.balance = rId.balance + Math.abs(this.balance[i].amount);
+              let x = new Grpmember();
+              x.id = rId.id;
+
+              x.name = this.balance[i].receiverName + " owes " + this.balance[i].payerName + " ₹" + Math.abs(this.balance[i].amount);
+              this.details.push(x);
+
+
+              pId.balance = pId.balance - Math.abs(this.balance[i].amount);
+              let y = new Grpmember();
+              y.id = pId.id;
+              y.name = this.balance[i].receiverName + " owes ₹" + Math.abs(this.balance[i].amount) + " to " + this.balance[i].payerName;
+              this.details.push(y);
+            }
           }
+
         }
       });
 
@@ -126,13 +131,29 @@ export class GroupComponent implements OnInit {
     this._appService.getAllFriends(this.UserId).subscribe((data: any) => {
       this.friends = data;
       for (var i = 0; i < data.length; i++) {
-        this.friends[i] = { "id": data[i].userId, "name": this.friends[i].userName, "added": false };
+       // this.friends[i] = { "id": data[i].userId, "name": this.friends[i].userName, "added": false };
+        this.AddGroupMembers[i] = { "id": data[i].userId, "name": this.friends[i].userName, "added": false };
       }
+      this._appService.getGroupDetails(this.groupId).subscribe((data: any) => {
+        var members = data.members;
+        for (var i = 0; i < members.length; i++) {
+          for (var j = 0; j < this.AddGroupMembers.length; j++) {
+
+            if (members[i].id == this.AddGroupMembers[j].id) {
+              console.log("found");
+              this.AddGroupMembers.splice(j, 1);
+            }
+          }
+        }
+        console.log(this.AddGroupMembers);
+      });
     });
     // this.showdiv = false;
-
-    
     console.log(this.TotalBalance);
+
+    this._appService.getGroupTransactions(this.groupId).subscribe((data: any) => {
+      this.transactions = data;
+    });
   }
 
   show(billId: number) {
@@ -194,7 +215,7 @@ export class GroupComponent implements OnInit {
   }
 
   AddMember(id: number) {
-    var m = this.friends.find(item => item.id === +id);
+    var m = this.AddGroupMembers.find(item => item.id === +id);
     if (m.added == false) {
       m.added = true;
     }
@@ -204,15 +225,15 @@ export class GroupComponent implements OnInit {
   }
 
   checkAddedMember(id: number) {
-    var m = this.friends.find(item => item.id === +id);
+    var m = this.AddGroupMembers.find(item => item.id === +id);
     return m.added;
   }
 
 
   onSubmit() {
-    for (var i = 0; i < this.friends.length; i++) {
-      if (this.friends[i].added == true) {
-        this.addedMembers.push(this.friends[i].id);
+    for (var i = 0; i < this.AddGroupMembers.length; i++) {
+      if (this.AddGroupMembers[i].added == true) {
+        this.addedMembers.push(this.AddGroupMembers[i].id);
       }
     }
 
@@ -291,7 +312,7 @@ export class GroupComponent implements OnInit {
     this.AddBillModel.creatorId = this.UserId;
     this.AddBillModel.groupId = this.groupId;
     this.AddBillModel.createdDate = new Date().toLocaleString();
-
+    this.AddBillModel.amount = this.totalAmount;
     this.sharedAmount = this.totalAmount / this.groupMember.length;
     //console.log("shared amount:" + this.sharedAmount);
 
@@ -444,4 +465,22 @@ export class GroupComponent implements OnInit {
       this.grpBalanceShow = false;
     }
   }
+
+  deleteGroup() {
+    console.log(this.TotalBalance);
+    if (this.TotalBalance.every(x => x.balance == 0)) {
+      var a = confirm("Are you ABSOLUTELY sure you want to delete this group ?");
+      if (a) {
+        this._appService.removeGroup(this.groupId).subscribe((data: any) => {
+          alert("Group Deleted");
+        this.router.navigate(['/', this.UserId]);
+        });
+      }
+    }
+    else {
+      alert("can't delete group first settle data with all members..");
+    }
+  }
+
+  
 }

@@ -29,7 +29,7 @@ namespace DemoDB.Apis
             _Context = context;
         }
 
-        // GET api/bill/5
+        // GET api/bill/id
         [HttpGet("{id}", Name = "GetBillRoute")]
         [ProducesResponseType(typeof(BillResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -75,7 +75,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // PUT api/bill/5
+        // PUT api/bill/id
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -103,7 +103,7 @@ namespace DemoDB.Apis
         }
 
 
-        // GET api/bill/all/userid
+        // GET api/bill/allbill/userid
         [HttpGet("allbill/{id}")]
         [ProducesResponseType(typeof(List<BillResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -160,7 +160,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // DELETE api/bill/5
+        // DELETE api/bill/id
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

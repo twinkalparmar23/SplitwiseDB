@@ -47,6 +47,25 @@ namespace DemoDB.Apis
             }
         }
 
+        // GET api/settle/total/1
+        [HttpGet("total/{id}")]
+        [ProducesResponseType(typeof(List<decimal>), 200)]
+        [ProducesResponseType(typeof(ApiCommonResponse), 400)]
+        public async Task<ActionResult> GetTotal(int id)
+        {
+
+            try
+            {
+                var total = await _SettlementRepository.GetTotal(id);
+                return Ok(total);
+            }
+            catch (Exception exp)
+            {
+                _Logger.LogError(exp.Message);
+                return BadRequest(new ApiCommonResponse { Status = false });
+            }
+        }
+
         // GET api/settle/group/groupid
         [HttpGet("group/{id}")]
         [ProducesResponseType(typeof(List<SettlementResponse>), 200)]
@@ -66,7 +85,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/settle/1/2
+        // GET api/settle/uid/fid
         [HttpGet("{uid}/{fid}")]
         [ProducesResponseType(typeof(List<SettlementResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

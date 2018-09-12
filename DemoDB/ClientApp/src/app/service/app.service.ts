@@ -98,6 +98,10 @@ export class AppService {
     return this._httpService.put('api/group/' + group.groupId, group);
   }
 
+  removeGroup(id: number) {
+    return this._httpService.delete('api/group/' + id);
+  }
+
   addGroupMember(groupId: number, MemberId: number) {
     return this._httpService.post('api/group/' + groupId + '/'+MemberId, groupId);
   }
@@ -135,10 +139,33 @@ export class AppService {
     return this._httpService.post('api/transaction', payment);
   }
 
-  
-
   getAllSettldata(id: number) {
     return this._httpService.get('api/settle/all/' + id)
+      .map(res => res.json());
+  }
+
+  getGroupTransactions(id: number) {
+    return this._httpService.get('api/transaction/all/' + id)
+      .map(res => res.json());
+  }
+
+  getIndividualTransactions(userId: number, friendId: number) {
+    return this._httpService.get('api/transaction/all/' + userId + '/' + friendId)
+      .map(res => res.json());
+  }
+
+  getAllExpenses(id: number) {
+    return this._httpService.get('api/bill/allbill/' + id)
+      .map(res => res.json());
+  }
+
+  getAllTransactions(id: number) {
+    return this._httpService.get('api/transaction/alltrans/' + id)
+      .map(res => res.json());
+  }
+
+  getTotal(id: number) {
+    return this._httpService.get('/api/settle/total/' + id)
       .map(res => res.json());
   }
 }

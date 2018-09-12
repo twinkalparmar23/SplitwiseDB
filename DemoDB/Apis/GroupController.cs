@@ -49,7 +49,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/group/5
+        // GET api/group/id
         [HttpGet("{id}", Name = "GetGroupRoute")]
         [ProducesResponseType(typeof(GroupResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -144,7 +144,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // PUT api/group/5
+        // PUT api/group/id
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -171,7 +171,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // DELETE api/group/5
+        // DELETE api/group/id
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

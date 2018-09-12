@@ -48,6 +48,10 @@ namespace DemoDB.Repository
                 var name = _Context.Group.SingleOrDefault(c => c.GroupId == transaction.GroupId);
                 transaction.GroupName = name.GroupName;
             }
+            else
+            {
+                transaction.GroupName = "NonGroup Expense";
+            }
 
             transaction.PaidAmount = tData.PaidAmount;
             transaction.CreatedDate = tData.CreatedDate;
@@ -136,7 +140,7 @@ namespace DemoDB.Repository
 
             List<TransactionResponse> transactions = new List<TransactionResponse>();
             
-            var tData = _Context.Transactions.Where(c => c.GroupId == Groupid).ToList();
+            var tData = _Context.Transactions.Where(c => c.GroupId == Groupid).OrderByDescending(c=>c.CreatedDate).ToList();
             for(var i = 0; i < tData.Count; i++)
             {
                 var trans = new TransactionResponse();
@@ -151,7 +155,7 @@ namespace DemoDB.Repository
         {
             List<TransactionResponse> transactions = new List<TransactionResponse>();
 
-            var tData = _Context.Transactions.Where(c=>(c.TransPayersId==Userid || c.TransPayersId==Friendid)&& (c.TransReceiversId==Userid||c.TransReceiversId==Friendid)).ToList();
+            var tData = _Context.Transactions.Where(c=>(c.TransPayersId==Userid || c.TransPayersId==Friendid)&& (c.TransReceiversId==Userid||c.TransReceiversId==Friendid)).OrderByDescending(c => c.CreatedDate).ToList();
             for (var i = 0; i < tData.Count; i++)
             {
                 var trans = new TransactionResponse();
@@ -166,7 +170,7 @@ namespace DemoDB.Repository
             //return await _Context.Transactions.Where(c => (c.TransPayersId == Userid || c.TransReceiversId == Userid) || c.groupsId.groupMembers.Any(aa => aa.User_Id == Userid)).ToListAsync();
             List<TransactionResponse> transactions = new List<TransactionResponse>();
 
-            var tData = _Context.Transactions.Where(c => (c.TransPayersId == Userid || c.TransReceiversId == Userid) || c.groupsId.groupMembers.Any(aa => aa.User_Id == Userid)).ToList();
+            var tData = _Context.Transactions.Where(c => (c.TransPayersId == Userid || c.TransReceiversId == Userid) || c.groupsId.groupMembers.Any(aa => aa.User_Id == Userid)).OrderByDescending(c => c.CreatedDate).ToList();
             for (var i = 0; i < tData.Count; i++)
             {
                 var trans = new TransactionResponse();

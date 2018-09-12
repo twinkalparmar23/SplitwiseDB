@@ -75,6 +75,17 @@ namespace DemoDB.Repository
         public async Task<bool> DeleteUserAsync(int id)
         {
             var user = await _Context.User
+                .Include(c=>c.BillMembers)
+                .Include(c=>c.Bills)
+                .Include(c=>c.Friends)
+                .Include(c=>c.groupMembers)
+                .Include(c=>c.Groups)
+                .Include(c => c.Payers)
+                .Include(c => c.Payersdata)
+                .Include(c => c.SharedMembers)
+                .Include(c => c.TPayers)
+                .Include(c => c.TReceivers)
+                .Include(c => c.Users)
                 .SingleOrDefaultAsync(c => c.UserId == id);
             _Context.Remove(user);
 

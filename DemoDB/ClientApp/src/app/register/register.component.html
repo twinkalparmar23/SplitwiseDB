@@ -15,16 +15,30 @@
   <div class="container">
     <form #form="ngForm" novalidate (ngSubmit)="onSubmit(form.value)" class="form">
       <label for="Username">Username:</label><br>
-      <input type="text" name="Username" [(ngModel)]="model.userName">
+      <!--<input type="text" name="Username" [(ngModel)]="model.userName">-->
 
-      <br><br>
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+        <input type="text" name="Username" [(ngModel)]="model.userName" class="form-control">
+      </div>
+      <!--<br><br>-->
 
       <label for="email">Email:</label><br>
-      <input type="email" name="email" [(ngModel)]="model.email">
+      <!--<input type="email" name="email" [(ngModel)]="model.email">-->
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+        <input type="email" name="email" [(ngModel)]="model.email" class="form-control">
+      </div>
 
-      <br><br>
+
+      <!--<br><br>-->
       <label for="Password">Password:</label><br>
-      <input type="password" name="Password" [(ngModel)]="model.password">
+      <!--<input type="password" name="Password" [(ngModel)]="model.password">-->
+      <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-eye-close"></i></span>
+        <input type="password" name="Password" [(ngModel)]="model.password" class="form-control">
+      </div>
+
       <br /><br />
       <button type="submit" class="btn btn-primary" style="background-color:#6f8091;">Register</button>
 

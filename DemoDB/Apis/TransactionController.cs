@@ -28,7 +28,7 @@ namespace DemoDB.Apis
             _Context = context;
         }
 
-        // GET api/transaction
+        // GET api/transaction/id
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<TransactionResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -47,7 +47,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/transaction/groupid
+        // GET api/transaction/all/groupid
         [HttpGet("all/{Groupid}")]
         [ProducesResponseType(typeof(List<TransactionResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -66,7 +66,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/transaction/userid/friendid
+        // GET api/transaction/all/userid/friendid
         [HttpGet("all/{Userid}/{Friendid}")]
         [ProducesResponseType(typeof(List<TransactionResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -85,7 +85,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/transaction/userid
+        // GET api/transaction/alltrans/userid
         [HttpGet("alltrans/{Userid}")]
         [ProducesResponseType(typeof(List<TransactionResponse>), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

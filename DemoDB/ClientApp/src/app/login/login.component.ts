@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
     },
       err => {
         //console.log(err),
-        alert("Invalid data...please register first...");
+        alert("Invalid data....");
       });
 
    

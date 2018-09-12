@@ -49,7 +49,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/user/5
+        // GET api/user/id
         [HttpGet("{id}", Name = "GetUserRoute")]
         [ProducesResponseType(typeof(UserResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -95,7 +95,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // PUT api/user/5
+        // PUT api/user/id
         [HttpPut("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -122,7 +122,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // DELETE api/user/5
+        // DELETE api/user/id
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -144,7 +144,7 @@ namespace DemoDB.Apis
             }
         }
 
-        //GET login/email/password
+        //GET api/user/login/email/password
         [Route("api/user/login/{email}/{password}")]
         [HttpGet("login/{email}/{password}")]
         [ProducesResponseType(typeof(ApiCommonResponse), 200)]

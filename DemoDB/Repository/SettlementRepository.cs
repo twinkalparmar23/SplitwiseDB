@@ -106,5 +106,39 @@ namespace DemoDB.Repository
 
             return settlements;
         }
+
+        public async Task<decimal> GetTotal(int Id)
+        {
+            decimal total = 0;
+            var sData = await _Context.Settlement.Where(c => c.PayerId == Id || c.SharedMemberId == Id).ToListAsync();
+
+            for(var i = 0; i < sData.Count; i++)
+            {
+                if (sData[i].PayerId == Id)
+                {
+                    if (sData[i].TotalAmount >= 0)
+                    {
+                        total = total + sData[i].TotalAmount;
+                    }
+                    else
+                    {
+                        total = total - Math.Abs(sData[i].TotalAmount);
+                    }
+                }
+                else
+                {
+                    if (sData[i].TotalAmount >= 0)
+                    {
+                        total = total - sData[i].TotalAmount;
+                    }
+                    else
+                    {
+                        total = total + Math.Abs(sData[i].TotalAmount);
+                    }
+                }
+            }
+
+            return total;
+        }
     }
 }

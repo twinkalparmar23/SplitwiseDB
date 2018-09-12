@@ -131,9 +131,40 @@ namespace DemoDB.Repository
 
         public async Task<bool> DeleteGroupAsync(int id)
         {
+            var sData = await _Context.Settlement.Where(c => c.GroupId == id).ToListAsync();
+            if (sData.Count > 0)
+            {
+                for (var i = 0; i < sData.Count; i++)
+                {
+                    _Context.Remove(sData[i]);
+                }
+                await _Context.SaveChangesAsync();
+            }
+
+            var billData = await _Context.Bill.Where(c => c.GroupId == id).ToListAsync();
+            if (billData.Count > 0)
+            {
+                for(var i = 0; i < billData.Count; i++)
+                {
+                    _Context.Remove(billData[i]);
+                }
+                await _Context.SaveChangesAsync();
+            }
+
+            var transData = await _Context.Transactions.Where(c => c.GroupId == id).ToListAsync();
+            if (transData.Count > 0)
+            {
+                for(var i = 0; i < transData.Count; i++)
+                {
+                    _Context.Remove(transData[i]);
+                }
+                await _Context.SaveChangesAsync();
+            }
+
+
             var group = await _Context.Group.SingleOrDefaultAsync(c => c.GroupId == id);
             _Context.Remove(group);
-
+            //await _Context.SaveChangesAsync();
 
             try
             {

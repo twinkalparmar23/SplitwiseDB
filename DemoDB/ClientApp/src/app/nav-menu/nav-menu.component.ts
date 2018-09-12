@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../service/app.service';
 import { User, UserEditModel } from '../Model/User';
 
+
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
@@ -44,10 +45,12 @@ export class NavMenuComponent implements OnInit {
       }
       else {
         alert("friend added..");
+        
       }
     },
       err => {
         alert("Invalid User...please enter correct name or email...");
+          
       }
     );
     this.FriendEmail = null;

@@ -9,6 +9,7 @@ export class AddBill {
   public billName: string;
   public creatorId: number;
   public groupId: number;
+  public amount: number;
   public createdDate;
   public payer: member[];
   public sharedMember: member[];

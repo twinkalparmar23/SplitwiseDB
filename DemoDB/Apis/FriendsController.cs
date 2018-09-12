@@ -28,7 +28,7 @@ namespace DemoDB.Apis
             _Context = context;
         }
 
-        // GET api/friends/5
+        // GET api/friends/id
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(FriendResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]
@@ -46,7 +46,7 @@ namespace DemoDB.Apis
             }
         }
 
-        // GET api/friends/all/5
+        // GET api/friends/all/id
         [HttpGet("all/{id}")]
         [ProducesResponseType(typeof(FriendResponse), 200)]
         [ProducesResponseType(typeof(ApiCommonResponse), 400)]

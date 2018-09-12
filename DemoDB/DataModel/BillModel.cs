@@ -14,6 +14,8 @@ namespace DemoDB.DataModel
         public DateTime CreatedDate { get; set; }
         public byte[] Image { get; set; }
 
+        public decimal Amount { get; set; }
+
         public int? GroupId { get; set; }
         public List<PayerModel> Payer { get; set; }
         public List<PayerModel> SharedMember { get; set; }

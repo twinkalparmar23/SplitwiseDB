@@ -33,6 +33,7 @@ namespace DemoDB.Repository
             var billData = _Context.Bill.SingleOrDefault(c => c.BillId == id);
             bill.BillId = billData.BillId;
             bill.BillName = billData.BillName;
+            bill.Amount = billData.Amount;
             bill.CreatedDate = billData.CreatedDate;
             bill.GroupId = billData.GroupId.GetValueOrDefault();
 
@@ -40,6 +41,10 @@ namespace DemoDB.Repository
             {
                 var groupname = _Context.Group.SingleOrDefault(c => c.GroupId == billData.GroupId);
                 bill.GroupName = groupname.GroupName;
+            }
+            else
+            {
+                bill.GroupName = "NonGroup Expense";
             }
             var name = _Context.User.SingleOrDefault(c => c.UserId == billData.CreatorId);
             bill.CreatorName = name.UserName;
@@ -73,6 +78,7 @@ namespace DemoDB.Repository
             Bill newBill = new Bill();
             newBill.BillName = bill.BillName;
             newBill.CreatorId = bill.CreatorId;
+            newBill.Amount = bill.Amount;
             newBill.CreatedDate = bill.CreatedDate;
             newBill.GroupId = bill.GroupId;
             _Context.Bill.Add(newBill);
@@ -266,7 +272,7 @@ namespace DemoDB.Repository
 
             List<BillResponse> bills = new List<BillResponse>();
 
-            var billData = _Context.Bill.Where(c => c.BillMembers.Any(aa => aa.SharedMemberId == id) || c.CreatorId == id || c.Payers.Any(aa => aa.PayerId == id)).ToList();
+            var billData = _Context.Bill.Where(c => c.BillMembers.Any(aa => aa.SharedMemberId == id) || c.CreatorId == id || c.Payers.Any(aa => aa.PayerId == id)).OrderByDescending(c => c.CreatedDate).ToList();
 
             for (var i = 0; i < billData.Count; i++)
             {
@@ -285,7 +291,7 @@ namespace DemoDB.Repository
             //    .Where(c => c.BillMembers.Any(aa => aa.SharedMemberId == Friendid || aa.SharedMemberId==Userid) && c.Payers.Any(aa => aa.PayerId == Userid || aa.PayerId==Friendid))
             //    .ToListAsync();
             List<BillResponse> bills = new List<BillResponse>();
-            var billData = _Context.Bill.Where(c => c.BillMembers.Any(aa => aa.SharedMemberId == Friendid || aa.SharedMemberId == Userid) && c.Payers.Any(aa => aa.PayerId == Userid || aa.PayerId == Friendid)).ToList();
+            var billData = _Context.Bill.Where(c => c.BillMembers.Any(aa => aa.SharedMemberId == Userid) && c.BillMembers.Any(aa => aa.SharedMemberId == Friendid)).OrderByDescending(c => c.CreatedDate).ToList();
             
             for (var i = 0; i < billData.Count; i++)
             {
@@ -308,7 +314,7 @@ namespace DemoDB.Repository
             //var count = _Context.Bill.Where(c => c.GroupId == Groupid).Count();
 
             List<BillResponse> bills = new List<BillResponse>();
-            var billData = _Context.Bill.Where(c => c.GroupId == Groupid).ToList();
+            var billData = _Context.Bill.Where(c => c.GroupId == Groupid).OrderByDescending(c => c.CreatedDate).ToList();
 
             for(var i = 0; i < billData.Count; i++)
             {

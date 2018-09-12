@@ -4,7 +4,7 @@
     <div class='navbar-collapse collapse' [ngClass]='{ "in": isExpanded }'>
       <ul class='nav navbar-nav'>
         <li><a [routerLink]="['home']"><span class="glyphicon glyphicon-th-large"></span>Dashboard</a></li>
-
+        <li><a [routerLink]="['allExpense']"><span class="glyphicon glyphicon-th-list"></span> All Expenses</a></li>
         <li><a [routerLink]="['GroupAdd']"><span class="glyphicon glyphicon-plus"></span> Group</a></li>
 
         <!--<ul class='nav navbar-nav'>
@@ -14,8 +14,9 @@
   </ul>-->
         <li>
           <ul type="none" class="vertical-menu">
+            
             <li *ngFor='let group of groups'>
-              <a [routerLink]="['group/',group.groupId]" style="padding:4px 14px;"><span class="glyphicon glyphicon-user"></span>{{group.groupName}}</a>
+              <a [routerLink]="['group/',group.groupId]" style="padding:4px 14px;"><span class="glyphicon glyphicon-tag"></span>{{group.groupName}}</a>
             </li>
           </ul>
         </li>
@@ -28,12 +29,12 @@
             <!-- Modal content-->
             <div class="modal-content">
               <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <button type="button" class="close" data-dismiss="modal" >&times;</button>
                 <h4 class="modal-title">Add Friend</h4>
               </div>
               <div class="modal-body">
 
-                <form #form="ngForm" >
+                <form #form="ngForm">
                   <div class="input-group">
                     <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                     <input id="userName" type="text" class="form-control" name="userName" placeholder="UserName" [(ngModel)]="FriendName" required>
@@ -43,16 +44,16 @@
                     <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
                     <input id="email" type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="FriendEmail" required>
                   </div>
-                  <div class="input-group" >
-                    <button type="button" class="btn btn-primary" [disabled]="!form.valid" (click)="addFriend()" data-dismiss="modal"  style="margin-top:10px;margin-left:210px;" >Save</button>
+                  <div class="input-group">
+                    <button type="button" class="btn btn-primary" [disabled]="!form.valid" (click)="addFriend()"  data-dismiss="modal" style="margin-top:10px;margin-left:210px;">Save</button>
                   </div>
 
                 </form>
 
               </div>
               <!--<div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>-->
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>-->
             </div>
 
           </div>
@@ -60,7 +61,7 @@
 
         <!--modal close-->
 
-        <li>
+        <li >
           <ul type="none" class="vertical-menu">
             <li *ngFor='let friend of friends'>
               <a [routerLink]="['friend/',friend.userId]" routerLinkActive="router-link-active" style="padding:4px 14px;"><span class="glyphicon glyphicon-user"></span>{{friend.userName}}</a>

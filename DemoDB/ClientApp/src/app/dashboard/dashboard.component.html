@@ -207,11 +207,11 @@
           <li>0.0</li>
         </ul>-->
             <div>total balance</div>
-            <div *ngIf="total>=0" style="color:forestgreen">{{total}}</div>
-            <div *ngIf="total<0" style="color:red">{{total}}</div>
+            <div *ngIf="total>=0" style="color:forestgreen">{{total | currency : 'INR' :'symbol-narrow'}}</div>
+            <div *ngIf="total<0" style="color:red">{{total | currency : 'INR' :'symbol-narrow'}}</div>
           </div>
-          <div class="content"><div>You Owe </div><div style="color:red;">{{oweData}}</div></div>
-          <div class="content"><div>You are Owed </div><div style="color:forestgreen;">{{owesData}}</div></div>
+          <div class="content"><div>You Owe </div><div style="color:red;">{{oweData |currency : 'INR' :'symbol-narrow' }}</div></div>
+          <div class="content"><div>You are Owed </div><div style="color:forestgreen;">{{owesData| currency : 'INR' :'symbol-narrow'}}</div></div>
         </div>
       </div>
       <br />
@@ -224,7 +224,7 @@
           <div *ngFor='let member of TotalBalance' >
             <div *ngIf="member.balance<0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
               <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
-              <div style="width:100%;color:red" >you owe {{-member.balance}}</div>
+              <div style="width:100%;color:red">you owe {{-member.balance | currency : 'INR' :'symbol-narrow'}}</div>
               <div *ngFor='let detail of details'>
                 <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
                   <li><small>{{detail.name}}</small></li>
@@ -241,7 +241,7 @@
           <div *ngFor='let member of TotalBalance' >
             <div *ngIf="member.balance>0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
               <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
-              <div style="width:100%;color:forestgreen;">owes you {{member.balance}}</div>
+              <div style="width:100%;color:forestgreen;">owes you {{member.balance | currency : 'INR' :'symbol-narrow'}}</div>
               <div *ngFor='let detail of details'>
                 <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
                   <li><small>{{detail.name}}</small></li>

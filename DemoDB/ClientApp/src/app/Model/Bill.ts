@@ -6,6 +6,7 @@ export class Bill {
   public billId: number;
   public billName: string;
   public creatorName: string;
+  public amount: number;
   public groupId: number;
   public groupName: string;
   public createdDate;

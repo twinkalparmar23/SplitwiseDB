@@ -7,6 +7,7 @@ import { Settle, Balance } from '../Model/Settle';
 import { Bill } from '../Model/Bill';
 import { Grpmember } from '../Model/Group';
 
+
 @Component({
   selector: 'app-friend',
   templateUrl: './friend.component.html',
@@ -34,6 +35,8 @@ export class FriendComponent implements OnInit {
   TotalBalance = new member();
   details: any[] = [];
   groupNames: any[] = [];
+
+  transactions: any[] = [];
 
   constructor(private _appService: AppService, private route: ActivatedRoute, private router: Router) {
 
@@ -89,27 +92,36 @@ export class FriendComponent implements OnInit {
           if (this.balance[i].payer_id === this.UserId) {
             if (this.balance[i].amount > 0) {
               this.TotalBalance.amount = this.TotalBalance.amount + this.balance[i].amount;
-              this.details.push("You owe " + this.balance[i].receiverName+" " + this.balance[i].amount + " for " + this.balance[i].groupName);
+              
+              this.details.push("You owe " + this.balance[i].receiverName +" ₹" + this.balance[i].amount + " for " + this.balance[i].groupName);
             }
             else {
               this.TotalBalance.amount = this.TotalBalance.amount - Math.abs(this.balance[i].amount);
-              this.details.push(this.balance[i].receiverName + " owes you " + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
+              
+              this.details.push(this.balance[i].receiverName + " owes you ₹" + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
             }
           }
           else {
             if (this.balance[i].amount > 0) {
               this.TotalBalance.amount = this.TotalBalance.amount - this.balance[i].amount;
-              this.details.push(this.balance[i].payerName + " owes you " + this.balance[i].amount + " for " + this.balance[i].groupName)
+              
+              this.details.push(this.balance[i].payerName + " owes you ₹" + this.balance[i].amount + " for " + this.balance[i].groupName)
             }
             else {
               this.TotalBalance.amount = this.TotalBalance.amount + Math.abs(this.balance[i].amount);
-              this.details.push("You owe " + this.balance[i].payerName + " " + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
+              
+              this.details.push("You owe " + this.balance[i].payerName + " ₹" + Math.abs(this.balance[i].amount) + " for " + this.balance[i].groupName);
             }
           }
         }
       }
+      
       console.log(this.TotalBalance);
       console.log(this.details);
+    });
+
+    this._appService.getIndividualTransactions(this.UserId, this.friendId).subscribe((data: any) => {
+      this.transactions = data;
     });
   }
 
@@ -144,6 +156,7 @@ export class FriendComponent implements OnInit {
   saveBill() {
     this.AddBillModel.creatorId = this.UserId;
     this.AddBillModel.createdDate = new Date().toLocaleString();
+    this.AddBillModel.amount = this.totalAmount;
     this.sharedAmount = this.totalAmount / 2;
 
     if (this.billPayer != null) {
@@ -216,10 +229,13 @@ export class FriendComponent implements OnInit {
       return this._appService.getCommenGroups(this.UserId, this.friendId).subscribe((data: any) => {
         if (data.length == 0) {
           //alert("no groups in common");
-          return this._appService.removeFriend(this.UserId, this.friendId).subscribe((data: any) => {
-            alert("Friend removed..");
-            this.router.navigate(['/', this.UserId]);
-          });
+          var a = confirm("Are you sure to remove Friend..??");
+          if (a) {
+            return this._appService.removeFriend(this.UserId, this.friendId).subscribe((data: any) => {
+              alert("Friend removed..");
+              this.router.navigate(['/', this.UserId]);
+            });
+          }
         } else {
           alert("common groups exist...first remove friend from group");
         }

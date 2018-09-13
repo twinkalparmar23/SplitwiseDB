@@ -13,7 +13,9 @@
   border-width:2px;  
   border-style:none solid;
   border-color:gray;
-  height:530px;
+  min-height: 530px;
+  height: auto;
+  
 }
 
 .title{
@@ -60,6 +62,7 @@ li.list-group-item:hover,li.list-group-item:active{
 
 .list-group-item{
   padding:5px 12px;
+  background-color: #ccd7e2
 }
 
 .list-group{margin-bottom:2px;}
@@ -84,4 +87,9 @@ li.list-group-item:hover,li.list-group-item:active{
     height: 30px;
     line-height: 30px;
     padding: 0px 12px;
+}
+
+#payerBody{
+  height:300px;
+  overflow-y:scroll;
 }

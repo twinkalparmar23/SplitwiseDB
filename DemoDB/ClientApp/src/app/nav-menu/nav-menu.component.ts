@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AppService } from '../service/app.service';
 import { User, UserEditModel } from '../Model/User';
-
+import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-nav-menu',
@@ -13,6 +13,7 @@ export class NavMenuComponent implements OnInit {
 
   constructor(private _appService: AppService, private route: ActivatedRoute) { }
 
+  @ViewChild('close') close: ElementRef;
   @Input() UserId: number;
   friends: UserEditModel[];
   groups: any[];
@@ -45,12 +46,12 @@ export class NavMenuComponent implements OnInit {
       }
       else {
         alert("friend added..");
-        
+        this.close.nativeElement.click();
       }
     },
       err => {
         alert("Invalid User...please enter correct name or email...");
-          
+        this.close.nativeElement.click();
       }
     );
     this.FriendEmail = null;

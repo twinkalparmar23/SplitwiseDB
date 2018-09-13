@@ -6,6 +6,7 @@ import { GroupResponse, Grpmember } from '../Model/Group';
 import { Balance, Settle } from '../Model/Settle';
 import { Transaction } from '../Model/Transaction';
 import { AddBill, member } from '../Model/AddBill';
+import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +15,10 @@ import { AddBill, member } from '../Model/AddBill';
 })
 export class DashboardComponent implements OnInit {
 
+  @ViewChild('close') close: ElementRef;
+  
+  @ViewChild('closebill') closebill: ElementRef;
+  
   UserId: number;
   UserName: string;
   user=new UserEditModel();
@@ -159,16 +164,24 @@ export class DashboardComponent implements OnInit {
     var x = this.friends.find(item => item.userId === +id);
     this.friendId = x.userId;
     
-    this.amount = 0;
+    //this.amount = 0;
     document.getElementById("receiver").innerText = x.userName;
-    document.getElementById("groups").innerText = "Select Group";
+    //document.getElementById("groups").innerText = "Select Group";
     this._appService.getCommenGroups(this.UserId, x.userId).subscribe((data: any) => {
       this.groups = data;
       let x = new GroupResponse();
       x.groupId = 0;
       x.groupName = "Non-Group";
       this.groups.push(x);
+
+
+      var gdata = this.groups.find(item => item.groupId === 0);
+      document.getElementById("groups").innerText = gdata.groupName;
+      this.groupId = gdata.groupId;
+      this.getBalance();
+
     });
+    
   }
 
   selectGroup(id: number) {
@@ -177,8 +190,6 @@ export class DashboardComponent implements OnInit {
     this.groupId = gdata.groupId;
    this.getBalance();
   }
-
-  
 
   getBalance() {
     this._appService.getIndividualbalance(this.UserId, this.friendId).subscribe((data: any) => {
@@ -212,6 +223,7 @@ export class DashboardComponent implements OnInit {
   savePayment() {
     if (this.amount == 0) {
       alert("can not record payment");
+      this.close.nativeElement.click();
       this.payment = null;
     }
     else {
@@ -225,10 +237,14 @@ export class DashboardComponent implements OnInit {
       this.payment.createdDate = new Date().toLocaleString();
     }
     console.log(this.payment);
-    this._appService.recordPayment(this.payment).subscribe((data: any) => {
-      alert("Payment recorded..");
-    });
-    this.amount = 0;
+    if (this.payment != null) {
+      this._appService.recordPayment(this.payment).subscribe((data: any) => {
+        alert("Payment recorded..");
+        this.close.nativeElement.click();
+      });
+      this.amount = 0;
+      document.getElementById("receiver").innerText = "receiver";
+    }
   }
 
   selectSharedMember(id: number, name: string) {
@@ -255,7 +271,7 @@ export class DashboardComponent implements OnInit {
   }
 
   showPayer() {
-    //document.getElementById("payers").innerText = "Multiple";
+    document.getElementById("payers").innerText = "Multiple";
     if (this.showMultiplePayer == false) {
       this.showMultiplePayer = true;
     }
@@ -272,8 +288,8 @@ export class DashboardComponent implements OnInit {
 
     this.billPayers = [];
 
-    //let x = this.groupMember.find(y => y.id === this.billPayer.id);
-    //document.getElementById("payers").innerText = x.name;
+    let x = this.Members.find(y => y.id === this.billPayer.id);
+    document.getElementById("payers").innerText = x.name;
   }
 
   addMultiplePayer(id: number, amount: number) {
@@ -287,6 +303,7 @@ export class DashboardComponent implements OnInit {
   saveBill() {
     this.AddBillModel.creatorId = this.UserId;
     this.AddBillModel.createdDate = new Date().toLocaleString();
+    this.AddBillModel.amount = this.totalAmount;
     this.sharedAmount = this.totalAmount / this.SharedArray.length;
 
     for (var i = 0; i < this.SharedArray.length; i++) {
@@ -418,7 +435,12 @@ export class DashboardComponent implements OnInit {
       alert("can not add bill please select more users");
     }
     else {
-      this._appService.addBill(this.AddBillModel).subscribe();
+      this._appService.addBill(this.AddBillModel).subscribe((data: any) => {
+        alert("bill addded..");
+        this.closebill.nativeElement.click();
+      });
+      //this.close.nativeElement.click();
+
     }
 
 

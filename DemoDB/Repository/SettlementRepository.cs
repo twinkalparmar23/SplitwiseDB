@@ -117,27 +117,18 @@ namespace DemoDB.Repository
                 if (sData[i].PayerId == Id)
                 {
                     if (sData[i].TotalAmount >= 0)
-                    {
-                        total = total + sData[i].TotalAmount;
-                    }
+                    { total = total + sData[i].TotalAmount;}
                     else
-                    {
-                        total = total - Math.Abs(sData[i].TotalAmount);
-                    }
+                    { total = total - Math.Abs(sData[i].TotalAmount);}
                 }
                 else
                 {
                     if (sData[i].TotalAmount >= 0)
-                    {
-                        total = total - sData[i].TotalAmount;
-                    }
+                    { total = total - sData[i].TotalAmount; }
                     else
-                    {
-                        total = total + Math.Abs(sData[i].TotalAmount);
-                    }
+                    { total = total + Math.Abs(sData[i].TotalAmount); }
                 }
             }
-
             return total;
         }
     }

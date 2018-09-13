@@ -40,6 +40,11 @@
           <a role="button" href="#Trans" data-toggle="collapse" id="tr">Transactions</a>
         </div>
         <div id="Trans" class="collapse">
+          <div *ngIf="transactions.length==0">
+            <div class="transaction" style="padding-left:20px;">
+              No Transactions
+            </div>
+          </div>
           <div *ngFor='let trans of transactions'>
             <div class="transaction">
               <div style="padding-left:20px;"><a class="cal" style="height:30px; margin-top:2px;">{{trans.createdDate | date: 'd'}}<small style="font-size:54%;">{{trans.createdDate | date: 'MMM'}}</small></a></div>

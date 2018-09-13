@@ -6,6 +6,7 @@ import { AddBill, member } from '../Model/AddBill';
 import { Settle, Balance } from '../Model/Settle';
 import { Bill } from '../Model/Bill';
 import { Grpmember } from '../Model/Group';
+import { ViewChild, ElementRef } from '@angular/core';
 
 
 @Component({
@@ -13,7 +14,10 @@ import { Grpmember } from '../Model/Group';
   templateUrl: './friend.component.html',
   styleUrls: ['./friend.component.css']
 })
+
 export class FriendComponent implements OnInit {
+
+  @ViewChild('closebill') closebill: ElementRef;
 
   UserId: number;
   friendId: number;
@@ -215,7 +219,10 @@ export class FriendComponent implements OnInit {
     this.AddBillModel.sharedMember = this.sharedMembers;
     console.log(this.AddBillModel);
 
-    this._appService.addBill(this.AddBillModel).subscribe();
+    this._appService.addBill(this.AddBillModel).subscribe((data: any) => {
+      alert("bill added...");
+      this.closebill.nativeElement.click();
+    });
     this.billPayers = [];
     this.settlements = [];
     this.sharedMembers = [];

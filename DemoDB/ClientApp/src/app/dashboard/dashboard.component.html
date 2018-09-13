@@ -14,7 +14,7 @@
               <!-- Modal content-->
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <button type="button" class="close" data-dismiss="modal" #close>&times;</button>
                   <h4 class="modal-title">Payment Method</h4>
                 </div>
                 <div class="modal-body">
@@ -37,7 +37,7 @@
                       </div>
                     </div>
                     <div class="input-group">
-                      <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                      <span class="input-group-addon" style="font-size:18px;">₹</span>
                       <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" [(ngModel)]="amount" required>
                     </div>
                     <div class="input-group">
@@ -110,7 +110,7 @@
               <!-- Modal content-->
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <button type="button" class="close" data-dismiss="modal" #closebill>&times;</button>
                   <h4 class="modal-title">Add Bill</h4>
                 </div>
                 <div class="modal-body">
@@ -125,7 +125,7 @@
                       <input id="billName" type="text" class="form-control" name="billName" placeholder="Description" [(ngModel)]="AddBillModel.billName" required>
                     </div>
                     <div class="input-group">
-                      <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                      <span class="input-group-addon" style="font-size: 18px;">₹</span>
                       <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" [(ngModel)]="totalAmount" required>
                     </div>
                     <div class="input-group">
@@ -177,14 +177,14 @@
                   <ul class="list-group" *ngFor='let member of SharedArray'>
                     <li class="list-group-item" (click)="addSinglePayer(member.id)">{{member.name}}</li>
                   </ul>
-                  <button type="button" class="btn btn-primary btn-xs" (click)="showPayer()" style="margin-top:5px;margin-bottom:5px;">Multiple Payers</button>
+                  <button type="button" class="btn btn-primary btn-xs" (click)="showPayer()" style="margin-top:5px;margin-bottom:5px;background-color: #6f8091">Multiple Payers</button>
 
                   <div *ngIf="showMultiplePayer">
                     <ul class="list-group" *ngFor='let member of SharedArray'>
                       <li class="list-group-item">{{member.name}}</li>
 
                       <li class="list-group-item" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                        <span class="input-group-addon" style="font-size:18px;">₹</span>
                         <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" #amount>
                       </li>
                       <li> <a role="button" style="float:right;" (click)="addMultiplePayer(member.id,amount.value)">add</a></li>
@@ -207,11 +207,11 @@
           <li>0.0</li>
         </ul>-->
             <div>total balance</div>
-            <div *ngIf="total>=0" style="color:forestgreen">{{total | currency : 'INR' :'symbol-narrow'}}</div>
-            <div *ngIf="total<0" style="color:red">{{total | currency : 'INR' :'symbol-narrow'}}</div>
+            <div *ngIf="total>=0" style="color:forestgreen">{{total | currency : 'INR' }}</div>
+            <div *ngIf="total<0" style="color:red">{{total | currency : 'INR' }}</div>
           </div>
-          <div class="content"><div>You Owe </div><div style="color:red;">{{oweData |currency : 'INR' :'symbol-narrow' }}</div></div>
-          <div class="content"><div>You are Owed </div><div style="color:forestgreen;">{{owesData| currency : 'INR' :'symbol-narrow'}}</div></div>
+          <div class="content"><div>You Owe </div><div style="color:red;">{{oweData |currency : 'INR'  }}</div></div>
+          <div class="content"><div>You are Owed </div><div style="color:forestgreen;">{{owesData| currency : 'INR' }}</div></div>
         </div>
       </div>
       <br />
@@ -221,35 +221,37 @@
         <div class="dashBody">
 
           <label class="dashBodyTitle">YOU OWE</label>
-          <div *ngFor='let member of TotalBalance' >
-            <div *ngIf="member.balance<0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
-              <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
-              <div style="width:100%;color:red">you owe {{-member.balance | currency : 'INR' :'symbol-narrow'}}</div>
-              <div *ngFor='let detail of details'>
-                <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
-                  <li><small>{{detail.name}}</small></li>
-                </ul>
+          <div style="border: 1px solid lightgray;border-style: none solid none none;">
+            <div *ngFor='let member of TotalBalance' >
+              <div *ngIf="member.balance<0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
+                <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
+                <div style="width:100%;color:red">you owe {{-member.balance | currency : 'INR' }}</div>
+                <div *ngFor='let detail of details'>
+                  <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
+                    <li><small>{{detail.name}}</small></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-
         </div>
 
         <div class="dashBody">
 
           <label class="dashBodyTitle">YOU ARE OWED</label>
-          <div *ngFor='let member of TotalBalance' >
-            <div *ngIf="member.balance>0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
-              <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
-              <div style="width:100%;color:forestgreen;">owes you {{member.balance | currency : 'INR' :'symbol-narrow'}}</div>
-              <div *ngFor='let detail of details'>
-                <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
-                  <li><small>{{detail.name}}</small></li>
-                </ul>
+          <div style="border: 1px solid lightgray;border-style: none none none solid;">
+            <div *ngFor='let member of TotalBalance'>
+              <div *ngIf="member.balance>0" style="padding: 12px 10px;background-color:#f5f5f5;margin-bottom: 5px;">
+                <div style="width:100%;"><span class="glyphicon glyphicon-user" style="padding-right: 8px;"></span>{{member.name}}</div>
+                <div style="width:100%;color:forestgreen;">owes you {{member.balance | currency : 'INR' }}</div>
+                <div *ngFor='let detail of details'>
+                  <ul *ngIf="member.id==detail.id" style="margin-bottom:0px;">
+                    <li><small>{{detail.name}}</small></li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
-
         </div>
 
       </div>

@@ -103,6 +103,31 @@ namespace DemoDB.Repository
                 _Context.BillMember.Add(member);
             }
 
+
+            for (var i = 0; i < bill.SharedMember.Count - 1; i++)
+            {
+                for (var j = i + 1; j < bill.SharedMember.Count; j++)
+                {
+                    var fExist = _Context.FriendList.SingleOrDefault(c => c.UserId == bill.SharedMember[i].Id && c.FriendId == bill.SharedMember[j].Id);
+                    if (fExist == null)
+                    {
+                        var Exist = _Context.FriendList.SingleOrDefault(c => c.UserId == bill.SharedMember[j].Id && c.FriendId == bill.SharedMember[i].Id);
+                        if (Exist == null)
+                        {
+                            FriendList newFriend = new FriendList
+                            {
+                                UserId = bill.SharedMember[i].Id,
+                                FriendId = bill.SharedMember[j].Id
+                            };
+                            _Context.FriendList.Add(newFriend);
+                            await _Context.SaveChangesAsync();
+                        }
+                    }
+
+                }
+            }
+
+
             foreach (var data in bill.SettleModels)
             {
                 if (data.GroupId == null)

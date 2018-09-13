@@ -7,7 +7,7 @@ import { strictEqual } from 'assert';
 import { Group, GroupResponse, Grpmember } from '../Model/Group';
 import { AddBill, member } from '../Model/AddBill';
 import { Settle, Balance } from '../Model/Settle';
-
+import { ViewChild, ElementRef } from '@angular/core';
 
 @Component({
   selector: 'app-group',
@@ -15,6 +15,8 @@ import { Settle, Balance } from '../Model/Settle';
   styleUrls: ['./group.component.css']
 })
 export class GroupComponent implements OnInit {
+
+  @ViewChild('closebill') closebill: ElementRef;
 
   UserId: number;
   groupId: number;
@@ -140,7 +142,7 @@ export class GroupComponent implements OnInit {
           for (var j = 0; j < this.AddGroupMembers.length; j++) {
 
             if (members[i].id == this.AddGroupMembers[j].id) {
-              console.log("found");
+              //console.log("found");
               this.AddGroupMembers.splice(j, 1);
             }
           }
@@ -268,6 +270,17 @@ export class GroupComponent implements OnInit {
 
   onCancel() {
     this.showSettingData = false;
+    for (var i = 0; i < this.AddGroupMembers.length; i++) {
+      if (this.AddGroupMembers[i].added == true) {
+        this.AddGroupMembers[i].added = false;
+      }
+    }
+
+    for (var i = 0; i < this.groupMember.length; i++) {
+      if (this.groupMember[i].removed == true) {
+        this.groupMember[i].removed = false;
+      }
+    }
   }
 
   
@@ -295,13 +308,11 @@ export class GroupComponent implements OnInit {
   }
 
   addMultiplePayer(id: number, amount: number) {
-   
     let x = new member();
     x.id = id;
     x.amount = amount;
     this.billPayers.push(x);
     this.billPayer = null;
-    
   }
 
   saveBill() {
@@ -323,7 +334,6 @@ export class GroupComponent implements OnInit {
       this.sharedMembers.push(x);
     }
     this.AddBillModel.sharedMember = this.sharedMembers;
-
 
     if (this.billPayer != null) {
       this.AddBillModel.payer = [];
@@ -443,7 +453,11 @@ export class GroupComponent implements OnInit {
     }
 
     console.log(this.AddBillModel);
-    this._appService.addBill(this.AddBillModel).subscribe();
+    this._appService.addBill(this.AddBillModel).subscribe((data: any) => {
+      alert("bill added...");
+      this.closebill.nativeElement.click();
+    });
+
     this.settlements = [];
     this.billPayers = [];
     this.sharedMembers = [];

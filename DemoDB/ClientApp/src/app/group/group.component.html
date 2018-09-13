@@ -16,7 +16,7 @@
               <!-- Modal content-->
               <div class="modal-content">
                 <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <button type="button" class="close" data-dismiss="modal" #closebill>&times;</button>
                   <h4 class="modal-title">Add Bill with {{group?.groupName}}</h4>
                 </div>
                 <div class="modal-body">
@@ -26,7 +26,7 @@
                       <input id="billName" type="text" class="form-control" name="billName" placeholder="Description" [(ngModel)]="AddBillModel.billName" required>
                     </div>
                     <div class="input-group">
-                      <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                      <span class="input-group-addon" style="font-size:18px;">₹</span>
                       <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" [(ngModel)]="totalAmount" required>
                     </div>
                     <div class="input-group">
@@ -67,7 +67,7 @@
                       <li class="list-group-item">{{member.name}}</li>
 
                       <li class="list-group-item" class="input-group">
-                        <span class="input-group-addon"><i class="glyphicon glyphicon-usd"></i></span>
+                        <span class="input-group-addon" style="font-size:18px;">₹</span>
                         <input id="amount" type="number" class="form-control" name="amount" placeholder="Amount" #amount>
                       </li>
                       <li> <a role="button" style="float:right;" (click)="addMultiplePayer(member.id,amount.value)">add</a></li>
@@ -99,14 +99,14 @@
         <div *ngIf="check(bill.billId)">
           <div class="billcontent">
             <h3>{{bill.billName}}</h3>
-            <h4>{{bill.amount | currency : 'INR' :'symbol-narrow'}}</h4>
+            <h4>{{bill.amount | currency : 'INR' }}</h4>
             <small>Added by:{{bill.creatorName}}</small><br />
             <small>Date:{{bill.createdDate | date: 'fullDate'}}</small><br />
             <small>GroupName:{{bill.groupName}}</small>
             <hr />
-            <small *ngFor='let payer of bill.payers'>{{payer.name}} paid {{payer.amount | currency : 'INR' :'symbol-narrow'}}<br /></small>
+            <small *ngFor='let payer of bill.payers'>{{payer.name}} paid {{payer.amount | currency : 'INR' }}<br /></small>
             <hr />
-            <small *ngFor='let member of bill.billMembers'>{{member.name}} owes {{member.amount | currency : 'INR' :'symbol-narrow'}}<br /></small>
+            <small *ngFor='let member of bill.billMembers'>{{member.name}} owes {{member.amount | currency : 'INR' }}<br /></small>
           </div>
         </div>
       </div>
@@ -114,10 +114,15 @@
         <a role="button" href="#Trans" data-toggle="collapse" id="tr">View Transactions</a>
       </div>
       <div id="Trans" class="collapse">
+        <div *ngIf="transactions.length==0">
+          <div class="transaction" style="padding-left:20px;">
+            No Transactions
+          </div>
+        </div>
         <div *ngFor='let trans of transactions'>
           <div class="transaction">
             <div style="padding-left:20px;"><a class="cal" style="height:30px; margin-top:2px;">{{trans.createdDate | date: 'd'}}<small style="font-size:54%;">{{trans.createdDate | date: 'MMM'}}</small></a></div>
-            {{trans.payer.name}} paid {{trans.receiver.name}} {{trans.paidAmount |currency : 'INR' :'symbol-narrow'}}
+            {{trans.payer.name}} paid {{trans.receiver.name}} {{trans.paidAmount |currency : 'INR' }}
           </div>
         </div>
       </div>
@@ -172,8 +177,8 @@
         <div class="listGrp" *ngFor='let member of TotalBalance'>
           <div style="width:100%;">
             <label style="width:100%;">{{member.name}}</label>
-            <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance | currency : 'INR' :'symbol-narrow'}}</small>
-            <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance | currency : 'INR' :'symbol-narrow'}}</small>
+            <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance | currency : 'INR' }}</small>
+            <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance | currency : 'INR' }}</small>
             <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
           </div>
         </div>
@@ -197,8 +202,8 @@
                   <td >
                     <div style="width:100%;margin-bottom:8px;">
                       <div style="width:100%;">{{member.name}}</div>
-                      <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance | currency : 'INR' :'symbol-narrow'}}</small>
-                      <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance | currency : 'INR' :'symbol-narrow'}}</small>
+                      <small style="width:100%;color:red" *ngIf="member.balance>0">owes {{member.balance | currency : 'INR' }}</small>
+                      <small style="width:100%;color:forestgreen" *ngIf="member.balance<0">gets back {{-member.balance | currency : 'INR' }}</small>
                       <small style="width:100%;color:black" *ngIf="member.balance==0">settled up</small>
                     </div>
                   </td>

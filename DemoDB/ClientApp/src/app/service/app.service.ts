@@ -136,7 +136,11 @@ export class AppService {
   }
 
   recordPayment(payment: Transaction) {
-    return this._httpService.post('api/transaction', payment);
+    return this._httpService.post('api/transaction', payment)
+      .pipe(map(res => res.json()))
+      .catch((error: any) => {
+        return Observable.throw(new Error(error.status));
+      });
   }
 
   getAllSettldata(id: number) {

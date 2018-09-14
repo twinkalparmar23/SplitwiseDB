@@ -17,7 +17,7 @@
           </button>
           <ul class="dropdown-menu">
             <li><a [routerLink]="['/',userId,'editUser']">Account Setting</a></li>
-            <li><a [routerLink]="['/login']">LogOut</a></li>
+            <li><a role="button" (click)="logout()">LogOut</a></li>
           </ul>
         </div>
       </div>

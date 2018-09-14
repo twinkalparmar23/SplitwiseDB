@@ -235,16 +235,24 @@ export class DashboardComponent implements OnInit {
         this.payment.groupId = this.groupId;
       }
       this.payment.createdDate = new Date().toLocaleString();
+
+      console.log(this.payment);
+      if (this.payment.transPayersId != null && this.payment.transReceiversId != null && this.payment.paidAmount > 0) {
+        this._appService.recordPayment(this.payment).subscribe((data: any) => {
+          alert("Payment recorded..");
+          this.payment = null;
+          this.close.nativeElement.click();
+        },
+          err => { console.log(err); alert("Payment Doesn't recorded.."); }
+        );
+        this.amount = 0;
+        document.getElementById("receiver").innerText = "receiver";
+      }
+      else {
+        alert("can not record payment");
+      }
     }
-    console.log(this.payment);
-    if (this.payment != null) {
-      this._appService.recordPayment(this.payment).subscribe((data: any) => {
-        alert("Payment recorded..");
-        this.close.nativeElement.click();
-      });
-      this.amount = 0;
-      document.getElementById("receiver").innerText = "receiver";
-    }
+
   }
 
   selectSharedMember(id: number, name: string) {

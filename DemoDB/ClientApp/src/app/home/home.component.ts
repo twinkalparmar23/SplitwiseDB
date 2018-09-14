@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   userId: number;
   userData: User;
 
-  constructor(private _appService: AppService, private route: ActivatedRoute) {
+  constructor(private _appService: AppService, private route: ActivatedRoute, private router: Router) {
     this.userId = this.route.snapshot.params['id'];
     //console.log(this.userId);
     this._appService.getUserDetails(this.userId).subscribe((data: any) => {
@@ -23,4 +23,10 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
   }
 
+  logout() {
+    var a = confirm("Do you want to Logout...???");
+    if (a) {
+      this.router.navigate(['/login']);
+    }
+  }
 }
